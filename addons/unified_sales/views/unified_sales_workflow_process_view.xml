@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <!-- VIEW FOR THE OBJECT : unified_sales_workflow_process -->
+    <record id="unified_sales_workflow_process_view_form" model="ir.ui.view">
+        <field name="name">unified.sales.workflow.process.view.form</field>
+        <field name="model">unified.sales.workflow.process</field>
+        <field eval="16" name="priority"/>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                        </group>
+                        <group>
+                            <field name="journal_id" string="Payment Journal"
+                                   invisible="not register_payment"
+                                   required="register_payment"
+                                   domain="[('type','in',['bank','cash'])]"/>
+                            <field name="inbound_payment_method_id" string="Debit Method"
+                                   invisible="not register_payment"
+                                   required="register_payment"
+                                   domain=""/>
+                            <field name="sale_journal_id" required="1" string="Sales Journal"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Workflow Option">
+                            <field name="validate_order" string="Confirm Quotation"/>
+                            <field name="create_invoice" string="Create &amp; Validate Invoice" invisible="validate_order"/>
+                            <field name="register_payment" string="Register Payment" invisible="create_invoice"/>
+                            <field name="invoice_date_is_order_date" string="Force Accounting Date"/>
+                        </group>
+                        <group string="Order Configuration">
+                            <field name="picking_policy" required="1" string="Shipping Policy"/>
+                        </group>
+                        <p colspan="2" class="alert alert-warning" role="alert" invisible="not register_payment">
+                            <div style="color:#ff0000; font-size:15px;">
+                                <b>Payment Registration :</b>
+                            </div>
+                            <div class="d-inline-block w-100">
+                                <div class="row">
+                                    <div class="col-11 p-0">
+                                        <ul>
+                                            <li>
+                                                <b>Enterprise Edition :</b>
+                                                If 'Accounting'
+                                                module is installed, the invoice will be in "in
+                                                payment" state and
+                                                to register the payment one must use the Bank
+                                                Statement
+                                                Reconciliation process.
+                                            </li>
+                                            <li>
+                                                In all other cases it will be registered by default
+                                                process.
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="unified_sales_workflow_process_search_view" model="ir.ui.view">
+        <field name="name">unified.sales.workflow.process.search</field>
+        <field name="model">unified.sales.workflow.process</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- List view for unified.sales.workflow.process -->
+    <record id="unified_sales_workflow_process_list_view" model="ir.ui.view">
+        <field name="name">unified.sales.workflow.process.list</field>
+        <field name="model">unified.sales.workflow.process</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="validate_order"/>
+                <field name="create_invoice"/>
+                <field name="register_payment"/>
+                <field name="invoice_date_is_order_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="act_unified_sales_workflow_process_form" model="ir.actions.act_window">
+        <field name="name">Sales Workflow</field>
+        <field name="res_model">unified.sales.workflow.process</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem action="act_unified_sales_workflow_process_form"
+              id="menu_act_unified_sales_workflow_process_form" parent="sale.menu_sale_config"
+              sequence="100"/>
+</odoo>

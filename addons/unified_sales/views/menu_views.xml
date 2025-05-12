@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <menuitem id="menu_unified_sales_root"
+              name="Unified Sales"
+              web_icon="unified_sales,static/description/icon.png"
+              sequence="100"/>
+              
+    <!-- API Configuration Menu -->
+    <record id="action_unified_sales_api_config" model="ir.actions.act_window">
+        <field name="name">API Configurations</field>
+        <field name="res_model">unified.sales.api.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new API configuration
+            </p>
+            <p>
+                Configure external API integrations for automatic quotation creation.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem id="menu_unified_sales_api_config"
+              name="API Configurations"
+              parent="menu_unified_sales_root"
+              action="action_unified_sales_api_config"
+              sequence="10"/>
+              
+    <!-- External Orders Menu -->
+    <record id="action_unified_sales_external_order" model="ir.actions.act_window">
+        <field name="name">External Orders</field>
+        <field name="res_model">unified.sales.external.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_unified_sales_external_order_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No external orders yet
+            </p>
+            <p>
+                External orders are created when customers place orders on external platforms.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem id="menu_unified_sales_external_order"
+              name="External Orders"
+              parent="menu_unified_sales_root"
+              action="action_unified_sales_external_order"
+              sequence="20"/>
+              
+    <!-- Configuration Menu -->
+    <menuitem id="menu_unified_sales_config"
+              name="Configuration"
+              parent="menu_unified_sales_root"
+              sequence="100"/>
+</odoo> 

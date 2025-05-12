@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_unified_sales_api_config_user,unified.sales.api.config.user,model_unified_sales_api_config,sales_team.group_sale_salesman,1,1,1,1
+access_unified_sales_api_config_manager,unified.sales.api.config.manager,model_unified_sales_api_config,sales_team.group_sale_manager,1,1,1,1
+access_unified_sales_external_order_user,unified.sales.external.order.user,model_unified_sales_external_order,sales_team.group_sale_salesman,1,1,1,1
+access_unified_sales_external_order_manager,unified.sales.external.order.manager,model_unified_sales_external_order,sales_team.group_sale_manager,1,1,1,1
+access_unified_sales_automation_user,unified.sales.automation.user,model_unified_sales_automation,sales_team.group_sale_salesman,1,1,1,1
+access_unified_sales_automation_manager,unified.sales.automation.manager,model_unified_sales_automation,sales_team.group_sale_manager,1,1,1,1
+access_unified_sales_workflow_process_user,unified.sales.workflow.process.user,model_unified_sales_workflow_process,sales_team.group_sale_salesman,1,1,1,1
+access_unified_sales_workflow_process_manager,unified.sales.workflow.process.manager,model_unified_sales_workflow_process,sales_team.group_sale_manager,1,1,1,1
+access_unified_sales_django_api_user,unified.sales.django.api.user,model_unified_sales_django_api,sales_team.group_sale_salesman,1,1,1,1
+access_unified_sales_django_api_manager,unified.sales.django.api.manager,model_unified_sales_django_api,sales_team.group_sale_manager,1,1,1,1

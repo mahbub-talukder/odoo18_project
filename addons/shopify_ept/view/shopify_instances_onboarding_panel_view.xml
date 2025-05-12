@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="1">
+
+        <!-- Shopify - ONBOARDING STEPS -->
+        <record id="onboarding_onboarding_step_shopify" model="onboarding.onboarding.step">
+            <field name="title">Create Instance</field>
+            <field name="description">Create the new Shopify instance here.</field>
+            <field name="button_text">Create Instance</field>
+            <field name="done_text">Looks great!</field>
+            <field name="panel_step_open_action_name">action_shopify_open_shopify_instance_wizard</field>
+            <field name="step_image" type="base64" file="base/static/img/onboarding_default.png"/>
+            <field name="step_image_filename">onboarding_default.png</field>
+            <field name="step_image_alt">Onboarding Shopify Confirmation</field>
+            <field name="sequence">6</field>
+        </record>
+
+        <record id="onboarding_onboarding_step_shopify_configure" model="onboarding.onboarding.step">
+            <field name="title">Manage Configuration</field>
+            <field name="description">Manage the configuration for your instance.</field>
+            <field name="button_text">Configure</field>
+            <field name="done_text">Looks great!</field>
+            <field name="panel_step_open_action_name">action_shopify_open_basic_configuration_wizard</field>
+            <field name="step_image" type="base64" file="base/static/img/onboarding_default.png"/>
+            <field name="step_image_filename">onboarding_default.png</field>
+            <field name="step_image_alt">Configure Shopify</field>
+            <field name="sequence">6</field>
+        </record>
+
+        <record id="onboarding_onboarding_step_financial_status_configure" model="onboarding.onboarding.step">
+            <field name="title">Financial Status</field>
+            <field name="description">Configure the Shopify Financial Status here.</field>
+            <field name="button_text">Configure</field>
+            <field name="done_text">Looks great!</field>
+            <field name="panel_step_open_action_name">action_shopify_open_financial_status_configuration_wizard</field>
+            <field name="step_image" type="base64" file="base/static/img/onboarding_default.png"/>
+            <field name="step_image_filename">onboarding_default.png</field>
+            <field name="step_image_alt">Configure Financial Details</field>
+            <field name="sequence">6</field>
+        </record>
+
+        <record id="onboarding_onboarding_step_shopify_cron_configuration_configure" model="onboarding.onboarding.step">
+            <field name="title">Scheduler Configurations</field>
+            <field name="description">Configure the schedule actions for automation.</field>
+            <field name="button_text">Configure</field>
+            <field name="done_text">Looks great!</field>
+            <field name="panel_step_open_action_name">action_shopify_open_cron_configuration_wizard</field>
+            <field name="step_image" type="base64" file="base/static/img/onboarding_default.png"/>
+            <field name="step_image_filename">onboarding_default.png</field>
+            <field name="step_image_alt">Configure Schedular</field>
+            <field name="sequence">6</field>
+        </record>
+
+        <record id="onboarding_onboarding_shopify_dashboard" model="onboarding.onboarding">
+            <field name="name">Shopify Onboarding</field>
+            <field name="step_ids" eval="[
+                Command.link(ref('shopify_ept.onboarding_onboarding_step_shopify')),
+                Command.link(ref('shopify_ept.onboarding_onboarding_step_shopify_configure')),
+                Command.link(ref('shopify_ept.onboarding_onboarding_step_financial_status_configure')),
+                Command.link(ref('shopify_ept.onboarding_onboarding_step_shopify_cron_configuration_configure')),
+            ]"/>
+            <field name="route_name">shopify_dashboard</field>
+            <field name="panel_close_action_name">action_close_panel_shopify_dashboard</field>
+        </record>
+
+    </data>
+
+</odoo>

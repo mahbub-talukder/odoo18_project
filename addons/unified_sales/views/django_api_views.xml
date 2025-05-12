@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_django_api_config_tree" model="ir.ui.view">
+        <field name="name">unified.sales.django.api.tree</field>
+        <field name="model">unified.sales.django.api</field>
+        <field name="arch" type="xml">
+            <list string="Django API Configurations">
+                <field name="name"/>
+                <field name="api_url"/>
+                <field name="webhook_url"/>
+                <field name="last_sync_date"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_django_api_config_form" model="ir.ui.view">
+        <field name="name">unified.sales.django.api.form</field>
+        <field name="model">unified.sales.django.api</field>
+        <field name="arch" type="xml">
+            <form string="Django API Configuration">
+                <header>
+                    <button name="test_connection" string="Test Connection" type="object" class="oe_highlight"/>
+                    <button name="sync_products" string="Sync Products" type="object" class="btn-primary"/>
+                    <field name="active" widget="boolean_toggle"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Configuration Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="api_url"/>
+                            <field name="api_key" password="True"/>
+                        </group>
+                        <group>
+                            <field name="webhook_url" readonly="1"/>
+                            <field name="last_sync_date" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_django_api_config_search" model="ir.ui.view">
+        <field name="name">unified.sales.django.api.search</field>
+        <field name="model">unified.sales.django.api</field>
+        <field name="arch" type="xml">
+            <search string="Django API Configurations">
+                <field name="name"/>
+                <field name="api_url"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Last Sync Date" name="last_sync_date" context="{'group_by': 'last_sync_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo> 

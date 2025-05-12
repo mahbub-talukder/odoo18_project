@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- API Configuration Form View -->
+    <record id="view_unified_sales_api_config_form" model="ir.ui.view">
+        <field name="name">unified.sales.api.config.form</field>
+        <field name="model">unified.sales.api.config</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="API Configuration">
+                <header>
+                    <button name="test_connection" string="Test Connection" type="object" class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="API Configuration Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="api_type"/>
+                            <field name="api_url"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="api_key"/>
+                            <field name="api_secret" password="True"/>
+                            <field name="last_sync_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="webhook_url" widget="url" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- API Configuration Tree View -->
+    <record id="view_unified_sales_api_config_tree" model="ir.ui.view">
+        <field name="name">unified.sales.api.config.tree</field>
+        <field name="model">unified.sales.api.config</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="API Configurations">
+                <field name="name"/>
+                <field name="api_type"/>
+                <field name="api_url"/>
+                <field name="active"/>
+                <field name="last_sync_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- External Order Form View -->
+    <record id="view_unified_sales_external_order_form" model="ir.ui.view">
+        <field name="name">unified.sales.external.order.form</field>
+        <field name="model">unified.sales.external.order</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="External Order">
+                <header>
+                    <button name="action_process" string="Process Order" type="object" 
+                            class="oe_highlight" 
+                            invisible="state != 'new'"/>
+                    <button name="action_reset" string="Reset" type="object" 
+                            invisible="state != 'error'"/>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="new,processed,error"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="external_id" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="api_config_id"/>
+                            <field name="partner_id"/>
+                            <field name="quotation_id"/>
+                        </group>
+                        <group>
+                            <field name="date_created"/>
+                            <field name="last_update"/>
+                            <field name="error_message" invisible="state != 'error'"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- External Order Tree View -->
+    <record id="view_unified_sales_external_order_tree" model="ir.ui.view">
+        <field name="name">unified.sales.external.order.tree</field>
+        <field name="model">unified.sales.external.order</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="External Orders" decoration-info="state=='new'" decoration-success="state=='processed'" decoration-danger="state=='error'">
+                <field name="external_id"/>
+                <field name="api_config_id"/>
+                <field name="partner_id"/>
+                <field name="quotation_id"/>
+                <field name="date_created"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View for External Orders -->
+    <record id="view_unified_sales_external_order_search" model="ir.ui.view">
+        <field name="name">unified.sales.external.order.search</field>
+        <field name="model">unified.sales.external.order</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Search External Orders">
+                <field name="external_id"/>
+                <field name="partner_id"/>
+                <field name="quotation_id"/>
+                <filter string="New" name="state_new" domain="[('state','=','new')]"/>
+                <filter string="Processed" name="state_processed" domain="[('state','=','processed')]"/>
+                <filter string="Error" name="state_error" domain="[('state','=','error')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="API Config" name="api_config" context="{'group_by':'api_config_id'}"/>
+                    <filter string="Status" name="status" context="{'group_by':'state'}"/>
+                    <filter string="Customer" name="partner" context="{'group_by':'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo> 

@@ -1,0 +1,50 @@
+version: '3'
+services:
+
+  odoo:
+    image: odoo:18
+    container_name: odoo18_app
+    depends_on:
+      - db
+    ports:
+      - "8071:8069"
+    volumes:
+      - ./addons:/mnt/extra-addons
+      - odoo-web-data:/var/lib/odoo
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo
+    
+    command: odoo -d odoo18_db --init=all
+    # command: odoo -d odoo18_db --dev=all 
+    # command: -- --database odoo18_db --db_host=db --db_port=5432 --db_user=odoo --db_password=odoo --init base
+
+    # command: -- --database odoo18_db --db_host=db --db_port=5432 --db_user=odoo --db_password=odoo --dev=all
+    networks:
+      - odoo-network
+    restart: always
+
+  db:
+    image: postgres:15
+    container_name: odoo18_postgres
+    environment:
+      - POSTGRES_DB=odoo18_db
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5435:5432"
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+    networks:
+      - odoo-network
+    restart: always
+
+networks:
+  odoo-network:
+    driver: bridge
+
+volumes:
+  odoo-db-data:
+  odoo-web-data: 
