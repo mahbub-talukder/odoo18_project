@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Extend Sale Order Form View -->
+        <record id="view_order_form_inherit_custom_shopify_ept" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.custom.shopify.ept</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <!-- Add applied workflow and standalone payments under the notebook -->
+                <xpath expr="//notebook" position="inside">
+                    <page string="Custom Workflow" invisible="applied_workflow_id == False and standalone_payment_ids == []">
+                        <group>
+                            <group>
+                                <field name="applied_workflow_id" readonly="1"/>
+                            </group>
+                            <group>
+                                <!-- Empty group for alignment -->
+                            </group>
+                        </group>
+                        <!-- <field name="standalone_payment_ids" readonly="1">
+                            <tree>
+                                <field name="create_date"/>
+                                <field name="memo"/>
+                                <field name="journal_id"/>
+                                <field name="amount"/>
+                                <field name="state"/>
+                            </tree>
+                        </field> -->
+                        <div class="alert alert-info" role="alert"
+                            invisible="standalone_payment_ids == []">
+                            <p>These payments will be automatically reconciled when you create and validate invoices for this order.</p>
+                        </div>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo> 
