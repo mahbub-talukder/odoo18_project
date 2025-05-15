@@ -1,102 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Tree/List View -->
-        <record id="sale_workflow_process_custom_tree_view" model="ir.ui.view">
-            <field name="name">sale.workflow.process.custom.tree</field>
-            <field name="model">sale.workflow.process.custom</field>
+        <!-- Extend the existing form view -->
+        <record id="sale_workflow_process_ept_form_view_inherit" model="ir.ui.view">
+            <field name="name">sale.workflow.process.ept.form.inherit</field>
+            <field name="model">sale.workflow.process.ept</field>
+            <field name="inherit_id" ref="common_connector_library.sale_workflow_process_view_form"/>
             <field name="arch" type="xml">
-                <list>
-                    <field name="name"/>
-                    <field name="validate_order"/>
-                    <field name="create_invoice"/>
-                    <field name="register_payment"/>
-                    <field name="sale_journal_id"/>
-                    <field name="journal_id"/>
-                    <field name="picking_policy"/>
-                </list>
-            </field>
-        </record>
-
-        <!-- Form View -->
-        <record id="sale_workflow_process_custom_form_view" model="ir.ui.view">
-            <field name="name">sale.workflow.process.custom.form</field>
-            <field name="model">sale.workflow.process.custom</field>
-            <field name="arch" type="xml">
-                <form string="sale_workflow_process">
-                <sheet>
-                    <group>
-                        <group>
-                            <field name="name" required="1"/>
-                        </group>
-                        <group>
-                            <field name="journal_id"/>
-                            <field name="inbound_payment_method_id"
-                                   invisible="not register_payment"
-                                   required="register_payment"
-                                   domain=""/>
-                            <field name="sale_journal_id" required="1"/>
-                        </group>
-                    </group>
-                    <group>
-                        <group string="Workflow Option">
-                            <field name="validate_order"/>
-                            <field name="create_invoice"/>
-                            <field name="register_payment"/>
-                            <field name="invoice_date_is_order_date"/>
-                        </group>
-                        <group string="Order Configuration">
-                            <field name="picking_policy" required="1"/>
-                        </group>
-                        <p colspan="2" class="alert alert-info" role="alert" 
-                           invisible="not(validate_order and register_payment and not create_invoice)">
-                            <div style="color:#0056b3; font-size:15px;">
-                                <b>Custom Workflow:</b>
-                            </div>
-                            <div class="d-inline-block w-100">
-                                <div class="row">
-                                    <div class="col-11 p-0">
-                                        <ul>
-                                            <li>
-                                                When <b>Confirm Quotation</b> and <b>Register Payment</b> are checked, but <b>Create and Validate Invoice</b> is not:
-                                            </li>
-                                            <li>
-                                                A payment will be created without an invoice and automatically reconciled when 
-                                                the invoice is created manually later.
-                                            </li>
-                                            <li>
-                                                <b>Note:</b> This workflow applies to both Shopify imported orders and
-                                                manually created quotations in Odoo.
-                                            </li>
-                                        </ul>
-                                    </div>
+                <!-- Add custom alert message -->
+                <xpath expr="//group[.//field[@name='validate_order']]" position="after">
+                    <p colspan="2" class="alert alert-info" role="alert" 
+                       invisible="not(validate_order and register_payment and not create_invoice)">
+                        <div style="color:#0056b3; font-size:15px;">
+                            <b>Custom Workflow:</b>
+                        </div>
+                        <div class="d-inline-block w-100">
+                            <div class="row">
+                                <div class="col-11 p-0">
+                                    <ul>
+                                        <li>
+                                            When only <b>Confirm Quotation</b> and <b>Register Payment</b> are checked:
+                                        </li>
+                                        <li>
+                                            A payment will be created without an invoice and automatically reconciled when 
+                                            the invoice is created manually later.
+                                        </li>
+                                        <li>
+                                            <b>Note:</b> This workflow applies to both Shopify imported orders and
+                                            manually created quotations in Odoo.
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
-                        </p>
-                    </group>
-                </sheet>
-                </form>
+                        </div>
+                    </p>
+                </xpath>
             </field>
         </record>
-
-        <!-- Action -->
-        <record id="action_sale_workflow_process_custom" model="ir.actions.act_window">
-            <field name="name">Sale Workflow Process</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">sale.workflow.process.custom</field>
-            <field name="view_mode">list,form</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Create your first sale workflow process!
-                </p>
-            </field>
-        </record>
-
-        <!-- Menu Item -->
-        <menuitem id="menu_sale_workflow_process_custom"
-            name="Sale Workflow Process"
-            parent="sale.menu_sale_config"
-            action="action_sale_workflow_process_custom"
-            sequence="100"/>
     </data>
 </odoo>

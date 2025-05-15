@@ -29,8 +29,8 @@
                     <group>
                         <group string="Workflow Option">
                             <field name="validate_order"/>
-                            <field name="create_invoice" invisible="validate_order"/>
-                            <field name="register_payment" invisible="create_invoice"/>
+                            <field name="create_invoice"/>
+                            <field name="register_payment" />
                             <field name="invoice_date_is_order_date"/>
                         </group>
                         <group string="Order Configuration">

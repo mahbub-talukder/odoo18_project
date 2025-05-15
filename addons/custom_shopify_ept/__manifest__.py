@@ -28,11 +28,8 @@ Customizations for Shopify Connector module to implement the following:
 
     # always loaded
     'data': [
-        'security/ir.model.access.csv',
-        'views/views.xml',
         'views/inherit_sales_workflow_process.xml',
         'views/inherit_sale_order.xml',
-        'views/templates.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

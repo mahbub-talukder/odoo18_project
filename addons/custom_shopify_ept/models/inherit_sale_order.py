@@ -2,7 +2,7 @@
 # See LICENSE file for full copyright and licensing details.
 from odoo import models, fields, api, _
 import logging
-
+from odoo.exceptions import UserError
 logger = logging.getLogger(__name__)
 
 class SaleOrder(models.Model):
@@ -13,7 +13,7 @@ class SaleOrder(models.Model):
                                             help='Payments created before invoice generation')
     
     # Field to store the workflow that was applied
-    applied_workflow_id = fields.Many2one('sale.workflow.process.custom', 
+    applied_workflow_id = fields.Many2one('sale.workflow.process.ept', 
                                           string='Applied Workflow')
 
     def validate_and_paid_invoices_ept(self, work_flow_process_record):
@@ -113,25 +113,34 @@ class SaleOrder(models.Model):
                 continue
                 
             # Find eligible workflows - use sudo to ensure we can see all workflows
-            workflows = self.env['sale.workflow.process.custom'].sudo().search([
-                ('validate_order', '=', True),
-                ('register_payment', '=', True),
-                ('create_invoice', '=', False)
-            ], limit=1)
+            # workflows = self.env['sale.workflow.process.ept'].sudo().search([
+            #     ('validate_order', '=', True),
+            #     ('register_payment', '=', True),
+            #     ('create_invoice', '=', False)
+            # ], limit=1)
+
+            work_flow_process_record = order.auto_workflow_process_id
+            if not work_flow_process_record:
+                raise UserError(_("No workflow found for order %s,First do select the workflow under others info tab in sale order", order.name))
             
-            if workflows:
-                try:
-                    # Create standalone payment based on the first eligible workflow
-                    workflow = workflows[0]
-                    order._create_standalone_payment(workflow)
-                    order.write({'applied_workflow_id': workflow.id})
-                except Exception as e:
-                    # Log error but don't prevent order confirmation
-                    self.env.user.notify_warning(
-                        message=f"Could not create automatic payment: {str(e)}",
-                        title="Payment Creation Error", 
-                        sticky=True
-                    )
+
+            try:
+                # Create standalone payment based on the first eligible workflow
+                # Case 1: Only validate_order and register_payment are checked (but not create_invoice)
+                if work_flow_process_record.validate_order and work_flow_process_record.register_payment and not work_flow_process_record.create_invoice:
+                        
+                    # Create a standalone payment for the order total
+                    self._create_standalone_payment(work_flow_process_record)
+                    
+                    # Store the workflow that was applied
+                    self.write({'applied_workflow_id': work_flow_process_record.id})
+            except Exception as e:
+                # Log error but don't prevent order confirmation
+                self.env.user.notify_warning(
+                    message=f"Could not create automatic payment: {str(e)}",
+                    title="Payment Creation Error", 
+                    sticky=True
+                )
                 
         return result
     

@@ -18,15 +18,15 @@
                                 <!-- Empty group for alignment -->
                             </group>
                         </group>
-                        <!-- <field name="standalone_payment_ids" readonly="1">
-                            <tree>
+                        <field name="standalone_payment_ids" readonly="1">
+                            <list>
                                 <field name="create_date"/>
                                 <field name="memo"/>
                                 <field name="journal_id"/>
                                 <field name="amount"/>
                                 <field name="state"/>
-                            </tree>
-                        </field> -->
+                            </list>
+                        </field>
                         <div class="alert alert-info" role="alert"
                             invisible="standalone_payment_ids == []">
                             <p>These payments will be automatically reconciled when you create and validate invoices for this order.</p>

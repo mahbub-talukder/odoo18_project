@@ -15,8 +15,8 @@ services:
       - USER=odoo
       - PASSWORD=odoo
     
-    command: odoo -d odoo18_db --init=all
-    # command: odoo -d odoo18_db --dev=all 
+    # command: odoo -d odoo18_db --init=all
+    command: odoo -d odoo18_db --dev=all 
     # command: -- --database odoo18_db --db_host=db --db_port=5432 --db_user=odoo --db_password=odoo --init base
 
     # command: -- --database odoo18_db --db_host=db --db_port=5432 --db_user=odoo --db_password=odoo --dev=all
