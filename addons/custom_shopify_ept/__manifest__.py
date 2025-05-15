@@ -32,8 +32,8 @@ Customizations for Shopify Connector module to implement the following:
         'views/inherit_sale_order.xml',
     ],
     # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
+    # 'demo': [
+    #     'demo/demo.xml',
+    # ],
 }
 
