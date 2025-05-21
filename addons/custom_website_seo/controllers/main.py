@@ -127,6 +127,81 @@ class CustomWebsiteController(Website):
                     res["website_indexed"] = page.website_indexed
                 except:
                     _logger.warning("Could not get website_indexed from page")
+        elif res_model == 'product.template':
+            # For products, we need to handle website-specific SEO data differently
+            # since products don't have the same inheritance mechanism as views
+            _logger.info(f"Handling product SEO data for website {website_id}")
+            product = request.env['product.template'].browse(int(res_id))
+            
+            # Check for website-specific SEO data in our custom model
+            domain = [
+                ('product_tmpl_id', '=', int(res_id)),
+                ('website_id', '=', int(website_id))
+            ]
+            ProductSEO = request.env['product.template.seo']
+            product_seo = ProductSEO.search(domain, limit=1)
+            
+            if product_seo:
+                # Use the website-specific SEO data
+                _logger.info(f"Found website-specific SEO data for product: {product_seo.id}")
+                # Map fields from product_seo to expected response fields
+                res.update({
+                    'website_meta_title': product_seo.website_meta_title,
+                    'website_meta_description': product_seo.website_meta_description,
+                    'website_meta_keywords': product_seo.website_meta_keywords,
+                    'website_meta_og_img': product_seo.website_meta_og_img,
+                    'seo_name': product_seo.seo_name,
+                })
+                record = product  # Keep the original record for permission checks
+            else:
+                # No website-specific data yet, create a new one from product's default values
+                _logger.info(f"No website-specific SEO data found for product, creating new record")
+                record = product
+                # Get values from product template
+                vals = {
+                    'product_tmpl_id': int(res_id),
+                    'website_id': int(website_id),
+                    'website_meta_title': product.website_meta_title or '',
+                    'website_meta_description': product.website_meta_description or '',
+                    'website_meta_keywords': product.website_meta_keywords or '',
+                    'website_meta_og_img': product.website_meta_og_img or '',
+                    'seo_name': product.seo_name or ''
+                }
+                
+                # Create the product SEO record
+                try:
+                    new_product_seo = ProductSEO.sudo().create(vals)
+                    _logger.info(f"Created website-specific SEO data for product: {new_product_seo.id}")
+                    
+                    # Return the newly created data
+                    res.update({
+                        'website_meta_title': new_product_seo.website_meta_title,
+                        'website_meta_description': new_product_seo.website_meta_description,
+                        'website_meta_keywords': new_product_seo.website_meta_keywords,
+                        'website_meta_og_img': new_product_seo.website_meta_og_img,
+                        'seo_name': new_product_seo.seo_name,
+                    })
+                except Exception as e:
+                    _logger.error(f"Error creating website-specific SEO data: {str(e)}")
+                    # If creation fails, still show values from product template
+                    res.update({
+                        'website_meta_title': vals['website_meta_title'],
+                        'website_meta_description': vals['website_meta_description'],
+                        'website_meta_keywords': vals['website_meta_keywords'],
+                        'website_meta_og_img': vals['website_meta_og_img'],
+                        'seo_name': vals['seo_name'],
+                    })
+
+            
+            # Add website information
+            res['website_name'] = target_website.name
+            res['website_id'] = target_website.id
+            
+            _logger.info(f"Product SEO Data for {res_model} {res_id} on website {target_website.id}: {res}")
+            return res
+        
+
+
         else:
             # For other models, use standard approach with context
             _logger.info(f"Using standard approach for model: {res_model}")
@@ -153,7 +228,7 @@ class CustomWebsiteController(Website):
 
         res['has_social_default_image'] = target_website.has_social_default_image
 
-        if res_model not in ('website.page', 'ir.ui.view') and 'seo_name' in record:
+        if res_model not in ('website.page', 'ir.ui.view', 'product.template') and 'seo_name' in record:
             res['seo_name_default'] = request.env['ir.http']._slugify(record.display_name or '')
             res['seo_name'] = record.seo_name and request.env['ir.http']._slugify(record.seo_name) or ''
         
@@ -300,6 +375,68 @@ class CustomWebsiteController(Website):
                     page.with_context(website_id=int(website_id)).write({
                         'website_indexed': indexed_value
                     })
+            elif res_model == 'product.template':
+                # For products, we need to use our custom model to store website-specific SEO data
+                _logger.info(f"on save SEO save for website {website_id}")
+                product = request.env['product.template'].browse(int(res_id))
+                
+                # Get valid fields for this model
+                model_fields = valid_fields.get(res_model, ['website_meta_title', 'website_meta_description', 'website_meta_keywords', 'website_meta_og_img', 'seo_name'])
+                
+                # Filter data for valid product SEO fields
+                product_seo_data = {k: v for k, v in filtered_data.items() if k in model_fields}
+                
+                if not product_seo_data:
+                    _logger.warning("SEO Save - No valid data to save for product")
+                    return {'warning': 'No valid data to save'}
+                
+                # Check if this product already has website-specific SEO data
+                domain = [
+                    ('product_tmpl_id', '=', int(res_id)),
+                    ('website_id', '=', int(website_id))
+                ]
+                ProductSEO = request.env['product.template.seo']
+                product_seo = ProductSEO.search(domain, limit=1)
+                
+                if product_seo:
+                    # Update existing website-specific SEO data
+                    _logger.info(f"Updating existing website-specific SEO data for product: {product_seo.id}")
+                    result = product_seo.write(product_seo_data)
+                    record = product_seo  # Use this for reading back saved values
+                else:
+                    # Create new website-specific SEO data
+                    _logger.info(f"Creating new website-specific SEO data for product on website {website_id}")
+                    vals = {
+                        'product_tmpl_id': int(res_id),
+                        'website_id': int(website_id),
+                        **product_seo_data
+                    }
+                    
+                    # Check if user has permission to create records
+                    if not request.env.user.has_group('website.group_website_designer'):
+                        product_seo = ProductSEO.sudo().create(vals)
+                    else:
+                        product_seo = ProductSEO.create(vals)
+                        
+                    result = bool(product_seo)
+                    record = product_seo  # Use this for reading back saved values
+                    
+                # Force a flush to ensure data is written to database
+                request.env.cr.flush()
+                
+                # Prepare saved values
+                saved_values = {}
+                for field in product_seo_data.keys():
+                    if hasattr(record, field):
+                        saved_values[field] = getattr(record, field)
+                        
+                _logger.info(f"SEO Save - Saved product SEO values: {saved_values}")
+                
+                return {
+                    'success': True, 
+                    'result': result,
+                    'saved_values': saved_values
+                }
             else:
                 # For other models, use standard approach with context
                 _logger.info(f"Using standard approach for model: {res_model}")

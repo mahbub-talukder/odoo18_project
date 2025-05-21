@@ -61,7 +61,7 @@ patch(OptimizeSEODialog.prototype, {
                 }
                 
                 // Fetch initial SEO data for the current website
-                await this.fetchAndSetSeoData(this.websiteState.selectedWebsiteId);
+                // await this.fetchAndSetSeoData(this.websiteState.selectedWebsiteId);
                 
                 this.websiteState.loading = false;
             } catch (error) {
@@ -72,7 +72,7 @@ patch(OptimizeSEODialog.prototype, {
         });
         
         // Inject website selector on mount
-        onMounted(() => {
+        onMounted(async () => {
             let attempts = 0;
             const maxAttempts = 20;
             const tryInject = () => {
@@ -87,6 +87,7 @@ patch(OptimizeSEODialog.prototype, {
                 }
             };
             tryInject();
+            await this.fetchAndSetSeoData(this.websiteState.selectedWebsiteId);
         });
     },
     
@@ -220,7 +221,7 @@ patch(OptimizeSEODialog.prototype, {
      * Update all form fields with values from the seoData object
      * @param {Object} data The SEO data to set in the form fields
      */
-    updateFormFields(data) {
+    async updateFormFields(data) {
         console.log('Updating form fields with:', data);
         
         // Find title field by its label's for attribute (more specific)
@@ -230,6 +231,10 @@ patch(OptimizeSEODialog.prototype, {
             console.log('Updated title field:', titleField.value);
         } else {
             console.warn('Title field not found');
+            setTimeout(() => {
+                this.updateFormFields(data);
+                
+            }, 100);
         }
         
         // Find description field by its label's for attribute (more specific)
@@ -485,8 +490,14 @@ patch(OptimizeSEODialog.prototype, {
                 }
             }
         } else {
-            // Reset to original SEO data for current website
-            await this.resetToCurrentWebsiteData();
+            // If the model is product.template, fetch and set SEO data
+            console.log('Model:', this.object.model);
+            if (this.object.model === 'product.template') {
+                await this.fetchAndSetSeoData(websiteId);
+            } else {
+                // Reset to original SEO data for current website (for other models)
+                await this.resetToCurrentWebsiteData();
+            }
             
             // Update UI to remove different website message
             if (infoContainer) {
@@ -548,7 +559,7 @@ patch(OptimizeSEODialog.prototype, {
         
         try {
             // If we're saving to the current website, use the original save method
-            if (this.websiteState.selectedWebsiteId === this.currentWebsiteId) {
+            if (this.websiteState.selectedWebsiteId === this.currentWebsiteId && this.object.model != 'product.template') {
                 console.log("Saving to current website using original save method");
                 await this.originalSave();
                 return;

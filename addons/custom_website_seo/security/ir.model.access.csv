@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_product_template_seo_website_designer,product.template.seo.website.designer,model_product_template_seo,website.group_website_designer,1,1,1,1
+access_product_template_seo_website_editor,product.template.seo.website.editor,model_product_template_seo,website.group_website_restricted_editor,1,1,1,0

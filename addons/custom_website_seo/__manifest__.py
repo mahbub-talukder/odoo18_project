@@ -10,7 +10,9 @@
     'author': 'NexelBD',
     'license': 'LGPL-3',
     'depends': ['website'],
-    'data': [],
+    'data': [
+        'security/ir.model.access.csv',
+    ],
     'assets': {
         'web.assets_backend': [
             'custom_website_seo/static/src/js/seo_website_selector.js',
