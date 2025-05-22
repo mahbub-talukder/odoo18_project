@@ -508,3 +508,126 @@ class CustomWebsiteController(Website):
             import traceback
             _logger.error(f"SEO Save - Traceback: {traceback.format_exc()}")
             return {'error': str(e)} 
+
+class ProductSEOController(Website):
+    """
+    Extension of Website controller that adds support for using product.template.seo data
+    when handling product pages.
+    """
+    
+    def _prepare_product_for_json(self, product, include_attributes=True):
+        """Override to include website-specific SEO data in product JSON"""
+        res = super()._prepare_product_for_json(product, include_attributes)
+        
+        # Only handle product templates
+        if product._name != 'product.template':
+            return res
+            
+        # Get the current website
+        website = request.website
+        _logger.info(f"Preparing product JSON data for product {product.id} on website {website.id}")
+        
+        # Get website-specific SEO data
+        product_seo = self._get_product_seo_data(product.id, website.id)
+        if product_seo:
+            _logger.info(f"Found website-specific SEO data for product JSON: {product_seo.id}")
+            
+            # Add SEO fields to JSON response
+            res.update({
+                'website_meta_title': product_seo.website_meta_title,
+                'website_meta_description': product_seo.website_meta_description,
+                'website_meta_keywords': product_seo.website_meta_keywords,
+                'website_meta_og_img': product_seo.website_meta_og_img,
+                'seo_name': product_seo.seo_name,
+            })
+        
+        return res
+    
+    def _get_product_seo_data(self, product_template_id, website_id):
+        """Get website-specific SEO data for a product"""
+        ProductSEO = request.env['product.template.seo']
+        domain = [
+            ('product_tmpl_id', '=', product_template_id),
+            ('website_id', '=', website_id)
+        ]
+        product_seo = ProductSEO.search(domain, limit=1)
+        if not product_seo:
+            # No website-specific data found, create a new record
+            product = request.env['product.template'].browse(product_template_id)
+            vals = {
+                'product_tmpl_id': product_template_id,
+                'website_id': website_id,
+                'website_meta_title': product.website_meta_title or '',
+                'website_meta_description': product.website_meta_description or '',
+                'website_meta_keywords': product.website_meta_keywords or '',
+                'website_meta_og_img': product.website_meta_og_img or '',
+                'seo_name': product.seo_name or '',
+            }
+            try:
+                product_seo = ProductSEO.sudo().create(vals)
+                _logger.info(f"Created website-specific SEO data for product: {product_seo.id}")
+            except Exception as e:
+                _logger.error(f"Error creating website-specific SEO data: {str(e)}")
+                return None
+        
+        return product_seo
+
+
+from odoo.addons.website_sale.controllers.main import WebsiteSale
+
+class CustomWebsiteSaleController(WebsiteSale):
+    """
+    Extension of WebsiteSale controller that adds support for using product.template.seo data
+    when preparing product values.
+    """
+    
+    def _prepare_product_values(self, product, category, search, **kwargs):
+        """Override to include website-specific SEO data"""
+        values = super()._prepare_product_values(product, category, search, **kwargs)
+        
+        # Get the current website
+        website = request.website
+        _logger.info(f"Preparing product values for product {product.id} on website {website.id}")
+        
+        # Get website-specific SEO data using the CustomWebsiteController method
+        ProductSEO = request.env['product.template.seo']
+        domain = [
+            ('product_tmpl_id', '=', product.id),
+            ('website_id', '=', website.id)
+        ]
+        product_seo = ProductSEO.search(domain, limit=1)
+        
+        if not product_seo:
+            # No website-specific data found, create a new record
+            vals = {
+                'product_tmpl_id': product.id,
+                'website_id': website.id,
+                'website_meta_title': product.website_meta_title or '',
+                'website_meta_description': product.website_meta_description or '',
+                'website_meta_keywords': product.website_meta_keywords or '',
+                'website_meta_og_img': product.website_meta_og_img or '',
+                'seo_name': product.seo_name or '',
+            }
+            try:
+                product_seo = ProductSEO.sudo().create(vals)
+                _logger.info(f"Created website-specific SEO data for product in _prepare_product_values: {product_seo.id}")
+            except Exception as e:
+                _logger.error(f"Error creating website-specific SEO data in _prepare_product_values: {str(e)}")
+        
+        if product_seo:
+            _logger.info(f"Found website-specific SEO data for product: {product_seo.id}")
+            
+            # Add SEO data to product values
+            product = values.get('product')
+            if product:
+                # Override product SEO fields with website-specific values
+                # Note: This doesn't change the database record, just the values used in the template
+                product.website_meta_title = product_seo.website_meta_title
+                product.website_meta_description = product_seo.website_meta_description
+                product.website_meta_keywords = product_seo.website_meta_keywords
+                product.website_meta_og_img = product_seo.website_meta_og_img
+                product.seo_name = product_seo.seo_name
+                
+                _logger.info(f"Applied website-specific SEO data to product values")
+        
+        return values
