@@ -6,15 +6,19 @@
               inherit_id="website_sale.products_item">
         <xpath expr="//div[hasclass('oe_product_image')]" position="after">
             <div class="oe_product_tags_container" style="position: absolute; bottom: 10px; right: 10px; z-index: 10;">
-                <t t-if="not request.env.user._is_public() 
-                        and request.env.user.partner_id 
-                        and request.env.user.partner_id.property_product_pricelist 
-                        and request.env.user.partner_id.property_product_pricelist.tag_ids">
-                    <t t-foreach="request.env.user.partner_id.property_product_pricelist.tag_ids.filtered('active')" t-as="tag">
-                        <span t-attf-class="badge badge-pill o_tag_color_#{tag.color if tag.color else 0} oe_product_tag"
-                              t-att-title="tag.name">
-                            <t t-esc="tag.name"/>
-                        </span>
+                <t t-if="not request.env.user._is_public() and request.env.user.partner_id and request.env.user.partner_id.property_product_pricelist">
+                    <!-- Get the pricelist and product price info -->
+                    <t t-set="pricelist" t-value="request.env.user.partner_id.property_product_pricelist"/>
+                    <t t-set="combination_info" t-value="product._get_combination_info()"/>
+                    
+                    <!-- Show tags only if the pricelist affects the price -->
+                    <t t-if="pricelist.tag_ids and combination_info.get('price', 0) != product.list_price">
+                        <t t-foreach="pricelist.tag_ids.filtered('active')" t-as="tag">
+                            <span t-attf-class="badge badge-pill o_tag_color_#{tag.color if tag.color else 0} oe_product_tag"
+                                  t-att-title="tag.name">
+                                <t t-esc="tag.name"/>
+                            </span>
+                        </t>
                     </t>
                 </t>
             </div>
