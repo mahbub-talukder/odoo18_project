@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ox_pricelist_tag_user,ox.pricelist.tag.user,model_ox_pricelist_tag,base.group_user,1,1,1,1
+access_ox_pricelist_tag_manager,ox.pricelist.tag.manager,model_ox_pricelist_tag,sales_team.group_sale_manager,1,1,1,1

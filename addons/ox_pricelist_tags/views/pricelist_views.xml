@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Extend pricelist form to add tags field below Country Groups -->
+        <record id="inherited_product_pricelist_form_view" model="ir.ui.view">
+            <field name="name">product.pricelist.form.inherit</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view"/>
+            <field name="arch" type="xml">
+                <data>
+                    <!-- Add tags field after country_group_ids -->
+                    <xpath expr="//field[@name='country_group_ids']" position="after">
+                        <field name="tag_ids" widget="many2many_tags" placeholder="Select tags..." options="{'no_create': False}"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <!-- Extend pricelist tree view -->
+        <record id="inherited_product_pricelist_tree_view" model="ir.ui.view">
+            <field name="name">product.pricelist.tree.inherit</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view_tree"/>
+            <field name="arch" type="xml">
+                <data>
+                    <!-- Add after name field in tree view -->
+                    <field name="name" position="after">
+                        <field name="tag_ids" widget="many2many_tags"/>
+                    </field>
+                </data>
+            </field>
+        </record>
+    </data>
+</odoo>

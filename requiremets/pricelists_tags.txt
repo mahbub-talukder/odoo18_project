@@ -1,0 +1,66 @@
+Business Requirements:
+In the sales module,
+There will be option to add tags to pricelists of the sales module.those tags will be fetched from `Pricelists Tags`,
+a new menu `Pricelists Tags` under the configuration menu need to be created to create, edit and delete tags.
+
+-> As per current odoo business logic, 
+when the specefic contact are logged in (via portal login), In the product card,
+the pricelist's prices are shows instead of showing product actual price based on the pricelist attached to the contact.
+
+-> So, we need to show the tags (which are added to pricelists) in the product card in bottom right corner of the product card.
+
+Notes: complete the task by creating a new module name "ox_pricelist_tags"
+
+
+
+Create a new Odoo 18 custom module named **`ox_pricelist_tags`** with the following requirements:
+
+### 1. Module Basics
+
+* Name: `ox_pricelist_tags`
+* Depends on: `sale`, `website_sale`
+* Add standard manifest (`__manifest__.py`) with proper metadata.
+
+### 2. Pricelist Tags Model
+
+* Create a new model: `ox.pricelist.tag`
+
+  * Fields:
+
+    * `name` (Char, required, unique)
+    * `color` (Integer, optional, for future use with kanban/tag coloring)
+* Add menu item under **Sales → Configuration → Pricelists Tags**
+
+  * Submenu: `Pricelists Tags`
+  * Support Create, Edit, Delete.
+
+### 3. Extend Pricelist Model
+
+* Inherit `product.pricelist`.
+* Add Many2many field `tag_ids` linked to `ox.pricelist.tag`.
+* Add tags field in pricelist form view under the existing configuration.
+
+### 4. Portal Product Card Behavior
+
+* Current Odoo logic: portal users (contact) see prices based on their assigned pricelist.
+* Extend website product template rendering (`website_sale` product card view).
+* Add logic to display tags (`tag_ids`) of the pricelist assigned to the logged-in contact.
+* Show the tags in the **bottom-right corner of the product card**.
+* Use styled badges/pills for tags (Bootstrap/Odoo standard tag style).
+
+### 5. Deliverables
+
+* Complete Odoo module with:
+
+  * `__manifest__.py`
+  * `models/` (`ox_pricelist_tag.py`, `pricelist_inherit.py`)
+  * `views/` (menu, form, tree, website product card inheritance template)
+  * `security/ir.model.access.csv` with rules for `ox.pricelist.tag`
+
+### 6. Example UI Behavior
+
+* Admin creates tags from **Sales → Configuration → Pricelists Tags** (e.g., "Premium", "Wholesale", "Discount").
+* Tags are assigned to pricelists.
+* Pricelists are assigned to contacts.
+* When portal user (contact) logs in and views shop menu -> products, the tags of their assigned pricelist appear as styled labels at the bottom-right of each product card.
+

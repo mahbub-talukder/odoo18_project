@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit website sale product template to add pricelist tags -->
+    <template id="website_sale_product_template_inherit_ox_tags" 
+              name="Website Sale Product Template - OX Pricelist Tags" 
+              inherit_id="website_sale.products_item">
+        <xpath expr="//div[hasclass('oe_product_image')]" position="after">
+            <div class="oe_product_tags_container" style="position: absolute; bottom: 10px; right: 10px; z-index: 10;">
+                <t t-if="not request.env.user._is_public() 
+                        and request.env.user.partner_id 
+                        and request.env.user.partner_id.property_product_pricelist 
+                        and request.env.user.partner_id.property_product_pricelist.tag_ids">
+                    <t t-foreach="request.env.user.partner_id.property_product_pricelist.tag_ids.filtered('active')" t-as="tag">
+                        <span t-attf-class="badge badge-pill o_tag_color_#{tag.color if tag.color else 0} oe_product_tag"
+                              t-att-title="tag.name">
+                            <t t-esc="tag.name"/>
+                        </span>
+                    </t>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Add original price with strikethrough above pricelist price -->
+    <template id="website_sale_product_price_inherit_ox_tags" 
+              name="Product Price - Show Original Price" 
+              inherit_id="website_sale.products_item">
+        <xpath expr="//div[hasclass('o_wsale_product_information_text')]" position="after">
+            <!-- Add original price before the current price only if there's a discount -->
+            <t t-if="not request.env.user._is_public() 
+                    and request.env.user.partner_id 
+                    and request.env.user.partner_id.property_product_pricelist 
+                    and request.env.user.partner_id.property_product_pricelist.tag_ids">
+                <t t-set="list_price" t-value="product.list_price"/>
+                <t t-set="price" t-value="product._get_combination_info()['price']"/>
+                <t t-if="list_price and list_price != price">
+
+
+                    <div class="d-flex justify-content-between">
+                        
+                        <del class="text-muted mr-1" style="font-size: 0.85em;">
+                            
+                            <span t-esc="list_price" 
+                                t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                        </del>
+                        <span  style="font-size: 0.85em; font-weight:bold; margin-right:10px"> Sale Price </span>
+                    
+                    </div>
+                </t>
+            </t>
+        </xpath>
+    </template>
+</odoo>

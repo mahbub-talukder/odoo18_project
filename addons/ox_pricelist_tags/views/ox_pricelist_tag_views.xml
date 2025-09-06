@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- List view for pricelist tags (Odoo 18: tree -> list) -->
+        <record id="view_ox_pricelist_tag_list" model="ir.ui.view">
+            <field name="name">ox.pricelist.tag.list</field>
+            <field name="model">ox.pricelist.tag</field>
+            <field name="arch" type="xml">
+                <list string="Pricelist Tags" decoration-muted="active == False">
+                    <field name="name"/>
+                    <field name="color" widget="color_picker"/>
+                    <field name="active"/>
+                    <field name="pricelist_ids" widget="many2many_tags"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form view for pricelist tags -->
+        <record id="view_ox_pricelist_tag_form" model="ir.ui.view">
+            <field name="name">ox.pricelist.tag.form</field>
+            <field name="model">ox.pricelist.tag</field>
+            <field name="arch" type="xml">
+                <form string="Pricelist Tag">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Tag Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="color" widget="color_picker"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="pricelist_ids" widget="many2many_tags" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view for pricelist tags -->
+        <record id="view_ox_pricelist_tag_search" model="ir.ui.view">
+            <field name="name">ox.pricelist.tag.search</field>
+            <field name="model">ox.pricelist.tag</field>
+            <field name="arch" type="xml">
+                <search string="Search Pricelist Tags">
+                    <field name="name"/>
+                    <field name="pricelist_ids"/>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Color" name="group_color" context="{'group_by': 'color'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action for pricelist tags -->
+        <record id="action_ox_pricelist_tag" model="ir.actions.act_window">
+            <field name="name">Pricelist Tags</field>
+            <field name="res_model">ox.pricelist.tag</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_ox_pricelist_tag_search"/>
+            <field name="context">{'search_default_active': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first pricelist tag!
+                </p>
+                <p>
+                    Pricelist tags help you categorize and identify pricelists.
+                    They will be displayed on product cards for portal users.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu item for pricelist tags under Sales → Configuration → Pricelist Tags -->
+        <menuitem id="menu_ox_pricelist_tag"
+                  name="Pricelist Tags"
+                  parent="sale.menu_sale_config"
+                  action="action_ox_pricelist_tag"
+                  sequence="20"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,71 @@
+/* Product card tags styling */
+.oe_product_tags_container {
+    pointer-events: none;
+}
+
+.oe_product_tag {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 0.75em;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+    margin-left: 2px;
+    color: white !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s ease;
+}
+
+.oe_product_tag:hover {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    transform: scale(1.05);
+}
+
+/* Pricelist form tags - match Country Groups styling */
+.o_field_widget.o_field_many2many_tags[name="tag_ids"] .o_tag {
+    font-size: 0.875rem !important; /* Match medium size like Country Groups */
+    padding: 0.125rem 0.5rem !important;
+    line-height: 1.5 !important;
+}
+
+/* Odoo color classes for tags */
+.o_tag_color_0 { background-color: #6c757d !important; }
+.o_tag_color_1 { background-color: #f06050 !important; }
+.o_tag_color_2 { background-color: #f4a460 !important; }
+.o_tag_color_3 { background-color: #f7cd1f !important; }
+.o_tag_color_4 { background-color: #6cc1ed !important; }
+.o_tag_color_5 { background-color: #814968 !important; }
+.o_tag_color_6 { background-color: #30c381 !important; }
+.o_tag_color_7 { background-color: #d6145f !important; }
+.o_tag_color_8 { background-color: #475577 !important; }
+.o_tag_color_9 { background-color: #f475b0 !important; }
+.o_tag_color_10 { background-color: #7c7bad !important; }
+.o_tag_color_11 { background-color: #71639e !important; }
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+    .oe_product_tags_container {
+        bottom: 5px !important;
+        right: 5px !important;
+    }
+    
+    .oe_product_tag {
+        font-size: 0.65em;
+        padding: 0.2em 0.3em;
+    }
+}
+
+/* Original price with strikethrough styling */
+.oe_product del.text-muted {
+    display: inline-block;
+    margin-bottom: 2px;
+    opacity: 0.7;
+}
+
+/* Ensure proper spacing between original and discounted price */
+.oe_product .product_price {
+    line-height: 1.3;
+}
