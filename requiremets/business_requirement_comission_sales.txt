@@ -1,0 +1,32 @@
+Short business requirements:
+Commission structure:
+20% commission on first order
+10% residual commission on lifetime repeat orders
+Biweekly payouts once customer invoices are paid
+
+
+SRS:
+Feature1: Commission Plan
+1. Admin can generate comission Plan
+    there will be following fields:
+    target_period -> date range
+    sales person-> selection field [multiple sales person selection , many to many field]
+    disbursment frequency -> selection field [Biweekly/Monthly/weekly]
+    first_order_comission -> input field
+    residual_comission -> input field
+
+Business rules:
+1. Only admin can create the comission Plan
+2. There should be an approval layer : draft->approved
+3. sales persion can view only his/her comission plan,who are assigned to the comission plan.
+
+Feature 2: Comission 
+1. Realtime comission will be shows based on the active comission plan. [list view]
+ -> There should have two menu -> My Comission, Comission
+ -> Under the My Comission menu, logged user [sales person] can see his/her comission
+ -> Under the Comission menu, admin can see all comissions, sales person can't see this page.
+ -> report can be group by sales_persion, disbursment_frequency 
+ -> a status should be shows here comission is 
+
+Feature 3: Vendor Bill Generate:
+1. System will automatically generate vendor bill 
