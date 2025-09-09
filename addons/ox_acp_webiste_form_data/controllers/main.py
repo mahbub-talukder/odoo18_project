@@ -59,6 +59,7 @@ class WebsiteFormController(http.Controller):
                     'profession': post.get('profession'),
                     'place_of_birth': post.get('place_of_birth'),
                     'country_id': int(post.get('nationality_id')),
+                    'nationality': int(post.get('nationality_id')),
                     'date_of_birth': post.get('date_of_birth'),
                 }
                 new_partner = request.env['res.partner'].sudo().create(partner_vals)
