@@ -164,6 +164,9 @@ include 'includes/header.php';
       offset: 100,
     });
 
+    // const BASE_URL = '<?= BASE_URL ?>';
+    const BASE_URL = 'http://localhost:8071';
+
     document.addEventListener('DOMContentLoaded', function() {
         const nationalitySelect = document.getElementById('nationality_id');
         const formMessage = document.getElementById('formMessage');
@@ -172,7 +175,7 @@ include 'includes/header.php';
         // Function to fetch countries from Odoo API
         async function fetchCountries() {
             try {
-                const response = await fetch('http://localhost:8071/api/get_countries', {
+                const response = await fetch(`${BASE_URL}/api/get_countries`, {
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -213,7 +216,7 @@ include 'includes/header.php';
             console.log(data);
 
             try {
-                const response = await fetch('http://localhost:8071/api/submit_form', { // Adjust Odoo URL if necessary
+                const response = await fetch(`${BASE_URL}/api/submit_form`, { // Adjust Odoo URL if necessary
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
