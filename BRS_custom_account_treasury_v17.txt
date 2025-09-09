@@ -1,0 +1,117 @@
+Business Requirements Specification (BRS)
+Module: custom_account_treasury (Odoo 17)
+Purpose: Treasury payments and receipts with multi-line distribution, tax support, document picking, and advance (anticipo) handling.
+
+1. Scope and Users
+- Extends Odoo Accounting payments (account.payment) to support:
+  - Distributing one payment amount across multiple outstanding documents and other ledger items.
+  - Selecting move lines and invoices to pay directly from the payment form.
+  - Handling exchange difference/writeoff, taxes on payment lines, and analytic distribution.
+  - Managing advances (anticipos) for customers, suppliers, and employees, including default sequences and journals.
+- Users: Treasury users and managers via custom security groups. Access integrated into Accounting menus.
+
+2. Key Concepts and Data
+- Payment Header (account.payment) additions:
+  - payment_line_ids: One2many of Account Payment Detail lines.
+  - move_diff_ids: Track related journal entries for differences.
+  - destination_account_id: computed counterpart account (receivable/payable/transfer/advance account).
+  - company_currency_id, currency_id: currency handling per journal/company.
+  - Document pickers: customer_invoice_ids, supplier_invoice_ids, account_move_payment_ids.
+  - Domain helpers: domain_move_lines, domain_account_move_lines to filter picks.
+  - Advance handling: advance (bool), advance_type_id, code_advance (sequence), partner_type extended with employee.
+  - Write-off controls: writeoff_account_id, writeoff_label, payment_difference_line.
+  - invoice_cash_rounding_id (standard field exposed in views).
+
+- Payment Detail Line (account.payment.detail):
+  - Represents a single accounting line to be posted with the payment.
+  - Types via display_type (asset_cash, invoice, bill, reverse, entry, tax, rounding, counterpart, diff, diff_curr, advance).
+  - Links to selected move line (move_line_id), related invoice (invoice_id), account_id, amounts in company and foreign currency, analytic_distribution, taxes.
+  - Technical flags: is_main (header-driven lines: cash/counterpart/advance), is_counterpart, is_transfer, etc.
+
+- Advance Types (advance.type):
+  - name, account_id (receivable/payable), internal_type (related), company_id.
+  - Account extension: used_for_advance_payment boolean implies reconcile True.
+  - Company extension: advance_payment_journal_id default journal for advance applications.
+
+3. Functional Requirements
+3.1 Payment Creation & Editing
+- User can create a payment (inbound/outbound/transfer) and add Payment Detail lines:
+  - Manually via editable one2many grid.
+  - Semi-automatic via search fields: pick invoices (customer/supplier) or other move lines. System creates corresponding detail lines with default amounts/currencies, taxes, analytics.
+- System auto-computes main cash/bank line and counterpart/advance line(s) in payment_line_ids using _recompute_dynamic_lines_payment based on:
+  - payment.amount, payment.type, selected payment_line_ids (excluding asset_cash).
+  - If advance=True, create an advance main line on destination account.
+  - Compute difference and select writeoff account when needed.
+- Currency conversions:
+  - Lines store both company currency and line currency amounts. Conversion handled on onchange of amounts, date, currency, and account-level currencies.
+
+3.2 Taxes on Payment Detail Lines
+- When a payment detail line includes taxes, the module auto-creates a matching tax line (auto_tax_line=True) with tax_repartition_line_id and tags based on tax compute_all (handle_price_include=True). Those auto lines are removed/rebuilt when inputs change.
+
+3.3 Distribution Proposal
+- Button “Proponer distribución de pagos” fills payment_line_ids by scanning pending receivables/payables by partner and company, ordered by due date, allocating the header amount until exhausted.
+
+3.4 Counterpart Cleanup
+- Button “Eliminar Lineas” clears detail lines (except needed main lines) in draft and recomputes main lines.
+
+3.5 Destination Account Resolution
+- destination_account_id computed based on:
+  - Transfer: company transfer account.
+  - Reconciled invoices: account from first reconciled invoice.
+  - Partner type: receivable for customers, payable for suppliers.
+  - Advance: advance_type.account_id overrides.
+  - Employee payments: destination is change_destination_account value.
+
+3.6 Posting (Confirm)
+- Sequences:
+  - If advance=True, generate code_advance from a specific sequence per partner_type.
+  - For employee payments, assign name from employee payment sequence.
+- Move Creation:
+  - The module overrides _prepare_move_line_default_vals to replace the standard counterpart with many lines reflecting payment_line_ids (including taxes, analytics, invoice references, and cross-links to original move lines via line_pay and inv_id).
+  - Liquidity move line name can reflect advance code.
+- After posting, the module reconciles payment-generated lines with their referenced move lines when account and partner match and the invoice line is not reconciled.
+
+3.7 Synchronization and Safety
+- Read-only synchronization hooks ensure move/payment consistency and shared currency across move lines; partner consistency checks are documented but relaxed.
+- Payment copy removes detail lines.
+
+3.8 Rounding & Differences
+- payment_difference_line aggregates payment_line_ids amounts to guide counterpart amount and potential write-off account selection (income/expense currency exchange accounts when currency differences arise).
+
+3.9 Invoice Form – Advance Application
+- On posted invoices, users can see available advance payment move lines by partner and apply them using Apply Advance button:
+  - System creates a journal entry in company’s advance journal moving amounts from advance account to receivable/payable.
+  - Then reconciles these new lines against the invoice and the original advance lines.
+- Invoice indicates presence/count of advance payments; provides many2many listing.
+
+3.10 Sequences and Security
+- Sequences for employee payment, and advances per partner type (supplier, customer, employee).
+- Security groups for treasury user and manager; menus under a “Tesoreria” section including payment lists and settings for payment methods and advance types.
+
+4. Non-Functional / Constraints
+- Works with Odoo Accounting; assumes reconcile=True on accounts used for advances.
+- Posting rules: Do not delete posted journal items; all line shaping must occur prior to posting.
+- Multi-company/multi-currency supported via company and currency fields; conversions use company currency and payment date.
+
+5. UI and Views
+- Payment form extended:
+  - Distribution buttons, advance controls (advance, advance_type), destination/outstanding accounts, code_advance, payment difference field.
+  - Notebook page “Movimientos” with a one2many editable list of payment detail lines including taxes and analytics.
+  - Search pickers for invoices and move lines with domains filtered by partner/company/state/residual.
+- Account move form extended with Advance tab showing linked advance move lines and an Apply Advance button.
+- Menu entries under Tesoreria: receipts, payments, transfers, settings (payment methods, advance types).
+
+6. Edge Cases and Validations
+- Prevent deletion of payment term lines on move lines.
+- Ensure same currency across payment move lines; raise if mixed.
+- Handle both positive and negative residuals (refunds) when allocating.
+- Ensure sequences exist for the selected partner-type advances; otherwise raise a user error.
+
+7. Reporting/Navigation
+- Action to open journal entries related to differences (move_diff_ids).
+- Quick access to reconcile view from payment header.
+
+8. Migration Notes (context)
+- In Odoo 17, custom lines could be written to a draft move before posting. In Odoo 18, prefer shaping lines via _prepare_move_line_default_vals and avoid modifying posted moves.
+
+End of BRS.

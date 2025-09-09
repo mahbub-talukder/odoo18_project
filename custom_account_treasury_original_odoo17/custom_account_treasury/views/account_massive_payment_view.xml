@@ -10,7 +10,7 @@
                         <group>
                             <group>
                                 <field name="company_id" invisible="1" />
-                                <field name="account_id" domain="['|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]" />
+                                <field name="account_id" domain="[('company_id', '=', company_id)]" />
                                 <field name="partner_id" />
                                 <field name="name" />
                                 <field name="ref" invisible="1" />
@@ -48,10 +48,10 @@
             <field name="name">account.payment.detail.tree</field>
             <field name="model">account.payment.detail</field>
             <field name="arch" type="xml">
-                <list>
+                <tree>
                     <field name="type" />
                     <field name="company_id" invisible="1" />
-                    <field name="account_id" domain="['|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]" />
+                    <field name="account_id" domain="[('company_id', '=', company_id)]" />
                     <field name="partner_id" />
                     <field name="name" />
                     <field name="ref" invisible="1" />
@@ -75,7 +75,7 @@
                     <field name="balance" readonly="1" force_save="1" />
                     <field name="payment_currency_id" invisible="1" />
                     <field name="to_pay" />
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -167,14 +167,17 @@
                     <field name="change_destination_account" invisible="1" />
                     <field name="outstanding_account_id" readonly="state != 'draft'" />
                     <field name="destination_account_id" readonly="state != 'draft'" />
-                    <field name="invoice_cash_rounding_id" readonly="state != 'draft'"/>
                 </field>
                 <field name="date" position="before">
                     <field name="code_advance" readonly="state != 'draft'" />
                     <field name="payment_difference_line" />
                     <!--<field
-                    name="writeoff_account_id" string="Cuenta de diferencia" invisible="payment_difference_line == 0.0" readonly="state != 'draft'" required="payment_difference_line != 0.0"/>
-                                    <field name="writeoff_label" invisible="payment_difference_line == 0.0" readonly="state != 'draft'" required="payment_difference_line != 0.0"/>-->
+                    name="writeoff_account_id" string="Cuenta de diferencia" attrs="{'invisible':
+                    [('payment_difference_line', '=', 0.0)],'readonly': [('state', '!=', 'draft')],
+                    'required': [('payment_difference_line', '!=', 0.0)]}"/>
+                                    <field name="writeoff_label" attrs="{'invisible': [('payment_difference_line', '=', 0.0)]
+                    ,'readonly': [('state', '!=', 'draft')],'required': [('payment_difference_line', '!=',
+                    0.0)]}"/>-->
                 </field>
 
                 <xpath expr="//sheet" position="inside">
@@ -188,7 +191,7 @@
                                         invisible="payment_type == 'transfer'"
                                         options="{'no_create':True, 'no_edit':True}"
                                         domain="[('amount_residual','!=', 0),('account_type', 'in',['asset_receivable','liability_payable']),('parent_state', '=', 'posted'),('id','not in',domain_move_lines)]"
-                                        context="{'list_view_ref':'custom_account_treasury.view_move_line_tree_payment','search_default_partner_id' : partner_id, 'search_default_group_by_account': 1, 'name_groupby':1,'expand': 1}">
+                                        context="{'tree_view_ref':'custom_account_treasury.view_move_line_tree_payment','search_default_partner_id' : partner_id, 'search_default_group_by_account': 1, 'name_groupby':1,'expand': 1}">
                                     </field>
                                     <field name="supplier_invoice_ids" widget="many2many_tags"
                                         invisible="payment_type == 'transfer'"
@@ -205,7 +208,7 @@
                             </group>
 
                             <field name="payment_line_ids" widget="one2many_list" readonly="state != 'draft'">
-                                <list editable="bottom" decoration-success="display_type == 'asset_cash'"
+                                <tree editable="bottom" decoration-success="display_type == 'asset_cash'"
                                     decoration-info="display_type == 'invoice'"
                                     decoration-danger="display_type == 'bill'"
                                     decoration-warning="display_type == 'reverse'"
@@ -217,7 +220,7 @@
                                     <field name="move_line_id" readonly="False" force_save="True"
                                         options="{'no_create':True, 'no_open':True, 'always_reload': True}"
                                         context="{'show_number': True}"
-                                        domain="['|',('amount_residual','!=', 0),('amount_residual_currency','!=', 0), ('partner_id','=', partner_id)]" />
+                                        domain="['|',('amount_residual','!=', 0),('amount_residual_currency','!=', 0), ('partner_id','=', partner_id), ('account_id.reconcile','=',True)]" />
                                     <field name="account_id" />
                                     <field name="name" />
                                     <field name="ref" column_invisible="True" />
@@ -263,7 +266,7 @@
                                     <field name="tax_line_id" column_invisible="True" />
                                     <field name="tax_line_id2" column_invisible="True" />
                                     <field name="tax_base_amount" column_invisible="True" />
-                                </list>
+                                </tree>
                             </field>
                         </page>
                     </notebook>

@@ -32,7 +32,7 @@ class AccountPaymentDetail(models.Model):
 
 			balance = val.payment_amount
 			company = val.company_id or val.env.company
-			if val.payment_id.currency_id and val.payment_id.currency_id != company.currency_id:
+			if val.payment_id.currency_id and self.payment_id.currency_id != company.currency_id:
 				currency = val.payment_id.currency_id
 				balance = currency._convert(balance, val.company_currency_id, company, val.payment_id.date or fields.Date.today())
 
@@ -203,7 +203,7 @@ class AccountPaymentDetail(models.Model):
 				return amount, amount_currency
 			else:
 				amount = payment_currency._convert(amount_currency, val.company_currency_id,
-														val.company_id, val.date or fields.Date.today())
+														val.company_id, val.date or fields.date.today())
 				return amount, amount_currency
 
 	def _compute_payment_amount(self, invoices=None, currency=None):
@@ -240,11 +240,11 @@ class AccountPaymentDetail(models.Model):
 		for val in self:
 			currency = False
 			amount = 0.0
-			if not val.is_main and not val.payment_id.is_internal_transfer:
+			if not val.is_main and val.payment_id.payment_type != 'transfer':
 				if val.payment_currency_id != val.company_id.currency_id:
 					amount = val.payment_amount
 					currency = val.payment_currency_id or False
-			elif val.is_main and not val.payment_id.is_internal_transfer:
+			elif val.is_main and val.payment_id.payment_type != 'transfer':
 				company = val.company_id or val.env.company
 				currency = val.journal_id.currency_id or val.journal_id.company_id.currency_id or val.env.company.currency_id
 				if currency != val.journal_id.company_id.currency_id:
@@ -267,7 +267,7 @@ class AccountPaymentDetail(models.Model):
 	@api.onchange('to_pay', 'payment_id.payment_type', 'payment_amount')
 	def _onchange_to_pay(self):
 		for val in self:
-			if not val.payment_id.is_internal_transfer:
+			if val.payment_id.payment_type != 'transfer':
 				if val.to_pay:
 					if val.payment_currency_id != val.company_currency_id:
 						val.payment_amount = val._compute_payment_amount(currency=val.payment_currency_id) * -1

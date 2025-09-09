@@ -2,6 +2,8 @@ from odoo import models, fields, api, _,Command
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import (
     date_utils,
+    email_re,
+    email_split,
     float_compare,
     float_is_zero,
     float_repr,
@@ -46,14 +48,15 @@ class AccountPayment(models.Model):
 		string='Destination Account',
 		store=True, readonly=False,
 		compute='_compute_destination_account_id',
-		domain="[('account_type', 'in', ('asset_receivable', 'liability_payable')), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]",
+		domain="[('account_type', 'in', ('asset_receivable', 'liability_payable')), ('company_id', '=', company_id)]",
 		check_company=True)
 	change_destination_account = fields.Char(string="cambio de cuenta destino")
 
 	invoice_cash_rounding_id = fields.Many2one(
 		comodel_name='account.cash.rounding',
 		string='Cash Rounding Method',
-		readonly="state != 'draft'",
+		readonly=True,
+		states={'draft': [('readonly', False)]},
 		help='Defines the smallest coinage of the currency that can be used to pay by cash.',
 	)
 
@@ -66,7 +69,7 @@ class AccountPayment(models.Model):
 	supplier_invoice_ids = fields.Many2many("account.move", "supplier_invoice_payment_rel", 'invoice_id', 'payment_id',
 		string="Buscar Documentos Proveedores", domain="[('state','!=','draft')]")
 	account_move_payment_ids = fields.Many2many("account.move.line", "account_move_payment_rel", 'moe_line_id','payment_id',
-		string="Buscar Otros Documentos", domain="[('amount_residual','!=', 0),('parent_state','!=','draft')]")
+		string="Buscar Otros Documentos", domain="[('amount_residual','!=', 0),('parent_state','!=','draft'),('account_id.account_type', 'in', ['asset_receivable', 'liability_payable'])]")
 	
 	invoice_id = fields.Many2one(
 		comodel_name='account.move',
@@ -85,28 +88,15 @@ class AccountPayment(models.Model):
 	partner_type = fields.Selection(selection_add=[
 		('employee', 'Empleado'),
 	], ondelete={'employee': 'set default'})
-	
-	ref = fields.Char(string="Referencia", help="Payment reference")
-
-
-	is_internal_transfer = fields.Boolean(compute='_compute_is_internal_transfer', store=True)
-
-	@api.depends('move_id.line_ids.account_id')
-	def _compute_is_internal_transfer(self):
-		transfer_acc = self.env.company.transfer_account_id
-		for rec in self:
-			rec.is_internal_transfer = bool(transfer_acc and rec.move_id and  any(l.account_id == transfer_acc for l in rec.move_id.line_ids))
 
 	# === writeoff fields === #
 	writeoff_account_id = fields.Many2one('account.account', string="Cuenta de diferencia", copy=False,
-		domain="[('deprecated', '=', False), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]")
+		domain="[('deprecated', '=', False), ('company_id', '=', company_id)]")
 	writeoff_label = fields.Char(string='Journal Item Label', default='Diferencia',
 		help='Change label of the counterpart that will hold the payment difference')
 	payment_difference_line = fields.Monetary(string="Diferencia de pago",
 		store=True, readonly=True,
 		tracking=True)
-	
-
 	def open_reconcile_view(self):
 		return self.move_id.line_ids.open_reconcile_view()
 
@@ -146,6 +136,7 @@ class AccountPayment(models.Model):
 		to_remove = self.env['account.payment.detail']		
 		if self.payment_line_ids:
 			for line in list(self.payment_line_ids):
+				print(line, line.auto_tax_line)
 				if line.auto_tax_line:
 					to_remove += line
 					continue
@@ -321,7 +312,7 @@ class AccountPayment(models.Model):
 	def action_propose_payment_distribution(self):
 		move_model = self.env["account.move"]
 		for rec in self:
-			if self.payment_type == 'transfer':
+			if self.is_internal_transfer:
 				continue
 			domain = self._get_moves_domain()
 			pending_invoices = move_model.search(domain, order="invoice_date_due ASC")
@@ -374,7 +365,7 @@ class AccountPayment(models.Model):
 				amount = rec.amount * (rec.payment_type in ('outbound', 'transfer') and 1 or -1)
 				rec._create_payment_entry_line(rec.move_id)
 				super().action_post()
-				for line in rec.move_id.line_ids:
+				for line in rec.line_ids:
 					invoice_line = line.line_pay
 					if line and invoice_line:
 						# Comprobar que la línea de factura y la línea de pago coinciden en cuenta y partner
@@ -421,7 +412,7 @@ class AccountPayment(models.Model):
 			change_destination_account = self.destination_account_id.id
 		self.change_destination_account = change_destination_account
 
-	@api.depends('journal_id','partner_id','payment_type','reconciled_invoice_ids', 'partner_type', 'change_destination_account', 'advance_type_id')
+	@api.depends('journal_id','partner_id','is_internal_transfer','reconciled_invoice_ids','journal_id','payment_type', 'partner_type', 'partner_id', 'change_destination_account', 'advance_type_id')
 	def _compute_destination_account_id(self):
 		for val in self:
 			if val.change_destination_account not in (False,'0') :
@@ -588,7 +579,7 @@ class AccountPayment(models.Model):
 		if self.advance:
 			amount = self.amount * (self.payment_type in ('outbound', 'transfer') and -1 or 1)
 			self._onchange_accounts(-amount, account_id=self.destination_account_id.id , display_type='advance', is_main=True, is_counterpart=False)		
-		if self.payment_type != 'transfer':
+		if not self.is_internal_transfer:
 			manual_entries_total = sum(line.payment_amount for line in self.payment_line_ids.filtered(lambda l: l.display_type not in ['asset_cash',] and l.is_main == False))
 			counter_part_amount = amount - manual_entries_total
 			amount_diff = counter_part_amount - amount
@@ -601,7 +592,7 @@ class AccountPayment(models.Model):
 				display_type = 'counterpart'
 			counter_part_amount = amount - manual_entries_total
 			self._onchange_accounts(counter_part_amount, account_id, display_type=display_type, is_main=True, is_counterpart=True)
-		if self.payment_type == 'transfer':
+		if self.is_internal_transfer:
 			display_type = 'counterpart'
 			self._onchange_accounts(amount, account_id=self.destination_account_id.id, is_transfer=True, display_type=display_type, is_main=True, is_counterpart=False)
 
@@ -698,8 +689,7 @@ class AccountPayment(models.Model):
 		}
 	def _create_payment_entry_line(self, move):
 		aml_obj = self.env['account.move.line'].with_context(check_move_validity=False, skip_account_move_synchronization=True)
-		# Only unlink lines created by this payment to avoid breaking system lines
-		move.line_ids.filtered(lambda l: l.payment_id == self.id).unlink()
+		self.line_ids.unlink()
 		# Usamos una lista de comprensión para construir los diccionarios
 		aml_dicts = [{
 			'partner_id': self.payment_type in ('inbound', 'outbound') and self.env['res.partner']._find_accounting_partner(self.partner_id).id or False,
@@ -724,6 +714,7 @@ class AccountPayment(models.Model):
 		aml_obj.create(aml_dicts)
 
 		return True
+
 	# def _synchronize_to_moves(self, changed_fields):
 	# 	''' Update the account.move regarding the modified account.payment.
 	# 	:param changed_fields: A list containing all modified fields on account.payment.
@@ -879,4 +870,3 @@ class ResPartner(models.Model):
 	def _find_accounting_partner(self, partner):
 		''' Find the partner for which the accounting entries will be created '''
 		return partner.commercial_partner_id
-

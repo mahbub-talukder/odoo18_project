@@ -1,0 +1,5 @@
+Task: 
+we using odoo 18 and enabled pricelists option under the pricing section from sale settings.
+Now requirement is:
+1. There should be an option to entry/add `Tag` into pricelists, under the Country Groups select button.
+2. Based on pricelist rules, 
