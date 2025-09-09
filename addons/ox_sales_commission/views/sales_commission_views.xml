@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Action for Commission Slabs Dialog -->
+        <record id="action_sales_commission_slabs_dialog" model="ir.actions.act_window">
+            <field name="name">Commission Slabs</field>
+            <field name="res_model">sales.commission.line</field>
+            <field name="view_mode">list,form</field>
+            <field name="target">new</field>
+            <field name="context">{
+                'default_target_id': active_id,
+                'search_default_target_id': active_id,
+                'target_id': active_id,
+            }</field>
+            <field name="domain">[('target_id', '=', active_id)]</field>
+        </record>
+
+
+
+        <!-- Action for main Sales Commission Plan -->
+        <record id="action_sales_commission_plan" model="ir.actions.act_window">
+            <field name="name">Commission Plans</field>
+            <field name="res_model">sales.commission</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new Commission Plan
+                </p>
+            </field>
+        </record>
+
+        <record id="view_sales_commission_form" model="ir.ui.view">
+            <field name="name">sales.commission.form</field>
+            <field name="model">sales.commission</field>
+            <field name="arch" type="xml">
+                <form string="Commission Plan">
+                    <header>
+                        <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="state != 'draft'" groups="ox_sales_commission.group_sales_commission_admin"/>
+                        <button name="action_done" type="object" string="Mark as Done" class="btn-primary" invisible="state != 'approved'" groups="ox_sales_commission.group_sales_commission_admin"/>
+                        <button name="action_cancel" type="object" string="Cancel" invisible="state in ['done', 'cancel']" groups="ox_sales_commission.group_sales_commission_admin"/>
+                        <button name="action_draft" type="object" string="Reset to Draft" invisible="state != 'cancel'" groups="ox_sales_commission.group_sales_commission_admin"/>
+                        <!-- <button name="action_generate_commission_reports" type="object" string="Generate Commissions" 
+                                class="btn-secondary" invisible="state not in ['approved']" groups="ox_sales_commission.group_sales_commission_admin"/> -->
+                        <!-- <button name="action_create_test_commission_slabs" type="object" string="Create Test Slabs" 
+                                class="btn-secondary" invisible="state != 'draft'" groups="base.group_system"/> -->
+                        <field name="state" widget="statusbar" statusbar_visible="draft,approved,done" invisible="state == 'cancel'"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,cancel" invisible="state != 'cancel'"/>
+                    </header>
+
+                    <sheet>
+                        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active == False"/>
+                        <widget name="web_ribbon" title="Draft" bg_color="text-bg-warning" invisible="state != 'draft'"/>
+                        <widget name="web_ribbon" title="Approved" bg_color="text-bg-success" invisible="state != 'approved'"/>
+                        <widget name="web_ribbon" title="Done" bg_color="text-bg-info" invisible="state != 'done'"/>
+                        <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-danger" invisible="state != 'cancel'"/>
+                        <field name="active" invisible="1"/>
+
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_commission_reports" type="object" class="oe_stat_button" icon="fa-bar-chart">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Real-time</span>
+                                    <span class="o_stat_text">Commissions</span>
+                                </div>
+                            </button>
+                            <button name="action_view_historical_reports" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Historical</span>
+                                    <span class="o_stat_text">Reports</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <div class="oe_title">
+                            <label for="name" string="Commission Plan"/>
+                            <h1>
+                                <field name="name" placeholder="e.g. Commission Plan 2025"
+                                       readonly="state != 'draft'" class="d-block"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group>
+                                <label for="commission_type" string="Based on"/>
+                                <div>
+                                    <field name="commission_type" class="oe_inline" readonly="state != 'draft'"/>
+                               
+                                    
+                                    <label for="qualification_criteria" string="Per" class="per_label" />
+                                   
+
+                            
+                                    <field name="qualification_criteria_qty" class="oe_inline" readonly="state != 'draft'"
+                                           required="commission_type == 'qty'" invisible="commission_type != 'qty'"/>
+
+                                    <field name="qualification_criteria_volume" class="oe_inline" readonly="state != 'draft'"
+                                           required="commission_type == 'volume'" invisible="commission_type != 'volume'"/>
+                                    
+
+                                    <field name="qualification_criteria" invisible="1"/>
+                                </div>
+
+                                <field name="commission_for" readonly="state != 'draft'"/>
+                                <field name="salesperson_ids" widget="many2many_tags" readonly="state != 'draft'"
+                                       invisible="commission_for == 'team'" required="commission_for == 'person'"/>
+                                <field name="team_id" readonly="state != 'draft'"
+                                       invisible="commission_for == 'person'" required="commission_for == 'team'"/>
+                                <field name="product_ids" widget="many2many_tags" readonly="state != 'draft'"/>
+                                <field name="category_ids" widget="many2many_tags" readonly="state != 'draft'"/>
+
+                                
+
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+
+                            <group>
+                                <label for="effective_from" string="Effective Period"/>
+                                <div>
+                                    <field name="effective_from" class="oe_inline" force_save="1" readonly="state != 'draft'"/>
+                                    <i class="oi oi-fw oi-arrow-right"/>
+                                    <field name="effective_to" class="oe_inline" force_save="1" readonly="state != 'draft'"/>
+                                </div>
+                                <field name="frequency" force_save="1" readonly="state != 'draft'"/>
+                                <field name="company_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Targets" name="target_periods">
+                                <field name="target_ids" readonly="state != 'draft'">
+                                    <list editable="bottom" create="0" delete="0">
+                                        <field name="period_status" string="Status" widget="badge" 
+                                               decoration-info="period_status == 'upcoming'" 
+                                               decoration-warning="period_status == 'active'"
+                                               decoration-success="period_status == 'completed'"
+                                               decoration-muted="period_status == 'closed'"
+                                               options="{'text_align': 'center'}"
+                                               width="100px"/>
+                                        <field name="period" readonly="0" string="Period"/>
+                                        
+                                        <button name="%(action_sales_commission_slabs_dialog)d" type="action" string="Commission Slabs" 
+                                                title="Click to open Commission Slabs for this period" icon="fa-cogs"
+                                                class="btn-link text-primary"/>
+                                       
+                                        <field name="date_from" readonly="0"/>
+                                        <field name="date_to" readonly="0"/>
+                                        
+                                        <!-- <button name="action_test_commission_generation" type="object" string="Test Generate" 
+                                                title="Generate commission for this period (Test)" icon="fa-play-circle"
+                                                class="btn-link text-success" groups="base.group_system"/> -->
+                                        
+                                        <button name="action_view_commission_reports" type="object" string="View Reports" 
+                                                title="View commission reports for this period" icon="fa-bar-chart"
+                                                class="btn-link text-info" invisible="period_status != 'completed'"/>
+
+                                        <field name="target_amount" widget="monetary" options="{'currency_field': 'currency_id'}"
+                                               invisible="parent.commission_type != 'volume'" column_invisible="parent.commission_type != 'volume'"/>
+
+                                        <field name="target_units" invisible="parent.commission_type != 'qty'" 
+                                                column_invisible="parent.commission_type != 'qty'"
+                                                string="Target Units"/>
+                                                
+                                        <field name="collection_target" widget="monetary" options="{'currency_field': 'currency_id'}"
+                                               invisible="not (parent.commission_type == 'volume' and parent.qualification_criteria == 'amount_invoiced')" 
+                                               column_invisible="not (parent.commission_type == 'volume' and parent.qualification_criteria == 'amount_invoiced')"/>
+                                        <!-- <field name="commission_paid_status" string="Payment Status" widget="badge"
+                                               decoration-muted="commission_paid_status == 'pending'"
+                                               decoration-warning="commission_paid_status == 'partially_paid'"
+                                               decoration-success="commission_paid_status == 'paid'"/> -->
+                                               
+                                        <field name="currency_id" invisible="1" column_invisible="1"/>
+                                        
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_sales_commission_tree" model="ir.ui.view">
+            <field name="name">sales.commission.tree</field>
+            <field name="model">sales.commission</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="commission_type"/>
+                    <field name="qualification_criteria"
+                    />
+                    <field name="company_id"/>
+                    <field name="effective_from"/>
+                    <field name="effective_to"/>
+                    <field name="state" widget="badge" 
+                    decoration-muted="state == 'draft'" 
+                    decoration-success="state == 'approved'" 
+                    decoration-info="state == 'done'"
+                    decoration-danger="state == 'cancel'"/>
+                </list>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

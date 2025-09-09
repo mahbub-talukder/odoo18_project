@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- My Commission Report Views -->
+        <record id="view_sales_commission_report_tree" model="ir.ui.view">
+            <field name="name">sales.commission.report.tree</field>
+            <field name="model">sales.commission.report</field>
+            <field name="arch" type="xml">
+                <list string="My Commissions">
+                    <field name="salesperson_id"/>
+                    <field name="period"/>
+                    <field name="plan_id" string="Plan Name"/>
+                    <field name="commission_type" string="Plan Type"/>
+                    <field name="team_id" />
+                    <field name="target_amount" widget="monetary" options="{'currency_field': 'currency_id'}" 
+                           invisible="commission_type == 'qty'"/>
+                    <field name="target_units" invisible="commission_type == 'volume'"/>
+                    <field name="achieved_amount" widget="monetary" options="{'currency_field': 'currency_id'}" 
+                           invisible="commission_type == 'qty'"/>
+                    <field name="achieved_units" invisible="commission_type == 'volume'"/>
+                    <field name="commission_earned" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="commission_paid_status" widget="badge" 
+                           decoration-muted="commission_paid_status == 'pending'"
+                           decoration-warning="commission_paid_status == 'partially_paid'"
+                           decoration-success="commission_paid_status == 'paid'"/>
+                    <field name="company_id" groups="base.group_multi_company" invisible="1"/>
+                    <field name="currency_id" invisible="1" column_invisible="1"/>
+                    <field name="bill_generated" widget="boolean_toggle"/>
+                    <field name="bill_id" invisible="1" column_invisible="1"/>
+                    <!-- <button name="action_view_commission_details" type="object" string="Details" 
+                            title="View Commission Details" icon="fa-list-alt" class="btn-link"/> -->
+                    <button name="action_view_commission_details_realtime" type="object" string="Details" 
+                            title="View Commission Details Realtime" icon="fa-list-alt" class="btn-link"/>
+                    <button name="action_view_vendor_bill" type="object" string="Bill" 
+                            title="View Vendor Bill" icon="fa-file-text-o" class="btn-link"
+                            invisible="not bill_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_sales_commission_report_form" model="ir.ui.view">
+            <field name="name">sales.commission.report.form</field>
+            <field name="model">sales.commission.report</field>
+            <field name="arch" type="xml">
+                <form string="Commission Details">
+                    <header>
+                        <button name="action_view_vendor_bill" type="object" string="View Vendor Bill" 
+                                class="btn-primary" invisible="not bill_id"/>
+                        <field name="commission_paid_status" widget="statusbar" statusbar_visible="pending,partially_paid,paid"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_commission_details_realtime" type="object" class="oe_stat_button" icon="fa-list-alt">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Commission</span>
+                                    <span class="o_stat_text">Details</span>
+                                </div>
+                            </button>
+                            <button name="action_view_vendor_bill" type="object" class="oe_stat_button" icon="fa-file-text-o" 
+                                    invisible="not bill_id">
+                                <field name="bill_id" string="Vendor Bill" widget="statinfo"/>
+                            </button>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="plan_id" string="Plan Name"/>
+                                <field name="commission_type" string="Plan Type"/>
+                                <field name="period"/>
+                                <field name="salesperson_id"/>
+                                <field name="team_id"/>
+                                <field name="target_id"/>
+                                
+                            </group>
+                            <group>
+                                <field name="target_amount" widget="monetary" options="{'currency_field': 'currency_id'}" 
+                                       invisible="commission_type == 'qty'"/>
+                                <field name="target_units" invisible="commission_type == 'volume'"/>
+                                <field name="achieved_amount" widget="monetary" options="{'currency_field': 'currency_id'}" 
+                                       invisible="commission_type == 'qty'"/>
+                                <field name="achieved_units" invisible="commission_type == 'volume'"/>
+                                <field name="commission_earned" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Commission Details">
+                                <field name="detail_ids">
+                                    <list>
+                                        <field name="source_type"/>
+                                        <field name="sale_order_id" invisible="source_type != 'sale_order'"/>
+                                        <field name="invoice_id" invisible="source_type != 'invoice'"/>
+                                        <field name="product_id"/>
+                                        <field name="product_category_id"/>
+                                        <field name="achieved_amount" widget="monetary" options="{'currency_field': 'currency_id'}" 
+                                               invisible="parent.commission_type == 'qty'"/>
+                                        <field name="achieved_units" invisible="parent.commission_type == 'volume'"/>
+                                        <field name="commission_earned" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                       
+                                        <field name="date_achievement"/>
+                                        <field name="currency_id" invisible="1" />
+                                        <button name="action_view_source_document" type="object" string="Source" 
+                                                title="View Source Document" icon="fa-external-link" class="btn-link"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Commission Report Line Tree View for Details -->
+        <record id="view_sales_commission_report_line_tree" model="ir.ui.view">
+            <field name="name">sales.commission.report.line.tree</field>
+            <field name="model">sales.commission.report.line</field>
+            <field name="arch" type="xml">
+                <list string="Commission Details">
+                    <field name="report_id" string="Commission Report"/>
+                    <field name="source_type"/>
+                    <field name="sale_order_id" invisible="source_type != 'sale_order'"/>
+                    <field name="invoice_id" invisible="source_type != 'invoice'"/>
+                    <field name="product_id"/>
+                    <field name="product_category_id"/>
+                    <field name="achieved_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="achieved_units"/>
+                    <field name="commission_earned" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    
+                    
+                    <field name="commission_slab_id"/>
+                    <field name="date_achievement"/>
+                    <field name="currency_id" invisible="1" column_invisible="1"/>
+                    <button name="action_view_source_document" type="object" string="Source" 
+                            title="View Source Document" icon="fa-external-link" class="btn-link"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Commission Report Line Form View -->
+        <record id="view_sales_commission_report_line_form" model="ir.ui.view">
+            <field name="name">sales.commission.report.line.form</field>
+            <field name="model">sales.commission.report.line</field>
+            <field name="arch" type="xml">
+                <form string="Commission Detail">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="report_id"/>
+                                <field name="source_type"/>
+                                <field name="sale_order_id" invisible="source_type != 'sale_order'"/>
+                                <field name="invoice_id" invisible="source_type != 'invoice'"/>
+                                <field name="product_id"/>
+                                <field name="product_category_id"/>
+                                <field name="date_achievement"/>
+                            </group>
+                            <group>
+                                <field name="achieved_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="achieved_units"/>
+                                <field name="commission_earned" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="commission_slab_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="sales_commission_report_search_view" model="ir.ui.view">
+            <field name="name">sales.commission.report.search</field>
+            <field name="model">sales.commission.report</field>
+            <field name="arch" type="xml">
+                <search string="Search My Commissions">
+                    <field name="salesperson_id"/>
+                    <field name="team_id"/>
+                    <field name="period"/>
+                    <field name="commission_type"/>
+                    <field name="plan_id"/>
+                    <filter string="My Commissions" name="my_commissions" domain="[('salesperson_id', '=', uid)]"/>
+                    <filter string="Bill Generated" name="bill_generated" domain="[('bill_generated', '=', True)]"/>
+                    <filter string="Pending Payment" name="pending_payment" domain="[('commission_paid_status', '=', 'pending')]"/>
+                    <filter string="Partially Paid" name="partially_paid" domain="[('commission_paid_status', '=', 'partially_paid')]"/>
+                    <filter string="Paid" name="paid" domain="[('commission_paid_status', '=', 'paid')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Salesperson" name="salesperson" context="{'group_by': 'salesperson_id'}"/>
+                        <filter string="Commission Type" name="commission_type" context="{'group_by': 'commission_type'}"/>
+                        <filter string="Sales Team" name="sales_team" context="{'group_by': 'team_id'}"/>
+                        <filter string="Commission Plan" name="commission_plan" context="{'group_by': 'plan_id'}"/>
+                        <filter string="Period" name="period" context="{'group_by': 'period'}"/>
+                        <filter string="Bill Generated" name="bill_generated" domain="[('bill_generated', '=', True)]"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Commission Report Line Search View -->
+        <record id="sales_commission_report_line_search_view" model="ir.ui.view">
+            <field name="name">sales.commission.report.line.search</field>
+            <field name="model">sales.commission.report.line</field>
+            <field name="arch" type="xml">
+                <search string="Search Commission Details">
+                    <field name="report_id"/>
+                    <field name="source_type"/>
+                    <field name="product_id"/>
+                    <field name="product_category_id"/>
+                    <field name="date_achievement"/>
+                    <filter string="Sale Orders" name="sale_orders" domain="[('source_type', '=', 'sale_order')]"/>
+                    <filter string="Invoices" name="invoices" domain="[('source_type', '=', 'invoice')]"/>
+                    
+                    <group expand="0" string="Group By">
+                        <filter string="Commission Report" name="commission_report" context="{'group_by': 'report_id'}"/>
+                        <filter string="Source Type" name="source_type" context="{'group_by': 'source_type'}"/>
+                        <filter string="Product" name="product" context="{'group_by': 'product_id'}"/>
+                        <filter string="Product Category" name="product_category" context="{'group_by': 'product_category_id'}"/>
+
+                        <filter string="Achievement Date" name="achievement_date" context="{'group_by': 'date_achievement'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Actions -->
+        <record id="action_sales_commission_report" model="ir.actions.act_window">
+            <field name="name">My Commissions [Historical]</field>
+            <field name="res_model">sales.commission.report</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="sales_commission_report_search_view"/>
+            <field name="context">{'search_default_my_commissions': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first commission report!
+                </p>
+                <p>
+                    This view will show all commission reports and earnings.
+                </p>
+            </field>
+        </record>
+
+        <!-- Commission Details Action -->
+        <record id="action_sales_commission_report_lines" model="ir.actions.act_window">
+            <field name="name">Commission Details</field>
+            <field name="res_model">sales.commission.report.line</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="sales_commission_report_line_search_view"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No commission details found!
+                </p>
+                <p>
+                    Commission details will appear here when commission reports are generated.
+                </p>
+            </field>
+        </record>
+
+        <!-- All Commissions Action for Administrators -->
+        <record id="action_all_sales_commission_reports" model="ir.actions.act_window">
+            <field name="name">All Commissions [Historical]</field>
+            <field name="res_model">sales.commission.report</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="sales_commission_report_search_view"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No commission reports found!
+                </p>
+                <p>
+                    All commission reports will appear here.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo> 

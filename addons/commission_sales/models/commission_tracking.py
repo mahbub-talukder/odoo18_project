@@ -1,6 +1,8 @@
 from odoo import models, fields, api
 from datetime import datetime, timedelta
 from odoo.exceptions import UserError
+import logging
+_logger = logging.getLogger(__name__)
 
 class CommissionTracking(models.Model):
     _name = 'commission.tracking'
@@ -56,10 +58,22 @@ class CommissionTracking(models.Model):
     
 
     @api.model
-    def _cron_generate_vendor_bills(self):
+    def cron_generate_vendor_bills(self):
         """Cron job to generate vendor bills based on disbursement frequency"""
         today = fields.Date.today()
+
+        # find the active commission plans
+        active_commission_plan = self.env['commission.plan'].search([
+            ('state', '=', 'approved'),
+            ('target_period_start', '<=', today),
+            ('target_period_end', '>=', today)
+        ], limit=1)
         
+        if active_commission_plan.cron_run_date :
+            today = active_commission_plan.cron_run_date
+
+        _logger.info(f"Today: {today},weekday: {today.weekday()},day: {today.day}")
+        # return True
         # Get all unpaid commissions with paid invoices
         unpaid_commissions = self.search([
             ('is_paid', '=', False),
@@ -125,16 +139,18 @@ class CommissionTracking(models.Model):
         
     def _get_commission_expense_account(self):
         """Get or create commission expense account"""
+        # In Odoo 18, account.account uses company_ids (Many2many) instead of company_id
+        # Using standard commission expense account code 6220
         account = self.env['account.account'].search([
-            ('code', '=', 'COMM_EXP'),
-            ('company_id', '=', self.env.company.id)
+            ('code', '=', '6220'),
+            ('company_ids', 'in', [self.env.company.id])
         ], limit=1)
         
         if not account:
             account = self.env['account.account'].create({
-                'code': 'COMM_EXP',
+                'code': '6220',
                 'name': 'Commission Expense',
                 'account_type': 'expense_direct_cost',
-                'company_id': self.env.company.id,
+                'company_ids': [(6, 0, [self.env.company.id])],
             })
         return account

@@ -47,6 +47,8 @@ class CommissionPlan(models.Model):
     
     company_id = fields.Many2one('res.company', string='Company', 
                                   default=lambda self: self.env.company, required=True)
+    # this field is used for testing purpose to run the cron job manually
+    cron_run_date = fields.Date(string='Cron Run Date')
     
     # Add approval workflow actions
     def action_approve(self):
@@ -62,3 +64,22 @@ class CommissionPlan(models.Model):
     def action_draft(self):
         self.ensure_one()
         self.state = 'draft'
+
+    # do set validation if the paln is approved and at least one comission tracking is generated, this plan cannot be cancelled
+    @api.constrains('target_period_start', 'target_period_end')
+    def _check_overlapping_periods(self):
+        for rec in self:
+            overlapping_plans = self.search([
+                ('id', '!=', rec.id),
+                ('state', '=', 'approved'),
+                ('target_period_start', '<=', rec.target_period_end),
+                ('target_period_end', '>=', rec.target_period_start)
+            ])
+            if overlapping_plans:
+                raise models.ValidationError("A new plan cannot be generated due to overlapping target periods with existing approved plans.")
+
+    @api.constrains('state')
+    def _check_commission_tracking(self):
+        for rec in self:
+            if rec.state == 'approved' and rec.commission_tracking_ids:
+                raise models.ValidationError("This plan cannot be cancelled because at least one comission tracking is generated")

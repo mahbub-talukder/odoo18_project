@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Real-time Commission Report Tree View -->
+        <record id="view_sales_commission_realtime_report_tree" model="ir.ui.view">
+            <field name="name">sales.commission.realtime.report.tree</field>
+            <field name="model">sales.commission.realtime.report</field>
+            <field name="arch" type="xml">
+                <list string="Real-time Commissions" create="false" edit="false" delete="false">
+                    <field name="salesperson_id"/>
+                    <field name="period"/>
+                    <!-- <field name="date_from" />
+                    <field name="date_to" /> -->
+                    <field name="plan_id" string="Plan Name"/>
+                    <field name="commission_type" string="Plan Type"/>
+                    <field name="qualification_criteria" string="Criteria"/>
+                    <!-- <field name="team_id"/> -->
+                    <!-- <field name="period_status" widget="badge" 
+                           decoration-info="period_status == 'upcoming'" 
+                           decoration-warning="period_status == 'active'"
+                           decoration-success="period_status == 'completed'"
+                           decoration-muted="period_status == 'closed'"/> -->
+                    
+                    <!-- Target fields -->
+                    <field name="target_amount" widget="monetary" options="{'currency_field': 'currency_id'}" 
+                           invisible="commission_type == 'qty'"/>
+                    <field name="achieved_amount" widget="monetary" options="{'currency_field': 'currency_id'}" 
+                           invisible="commission_type == 'qty'"/>
+                    <field name="target_units" invisible="commission_type == 'volume'"/>
+                    <field name="achieved_units" invisible="commission_type == 'volume'"/>
+                    
+                    <!-- Achievement fields -->
+                    <!-- <field name="achievement_rate" /> -->
+                    
+                    
+                    <!-- Commission fields -->
+                    <field name="commission_earned" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <!-- <field name="commission_slab_id" string="Applied Slab"/> -->
+                    <field name="bill_generated" widget="boolean_toggle"/>
+                    
+                    <field name="bill_id" invisible="1" column_invisible="1"/>
+                    <!-- System fields -->
+                    <field name="company_id" groups="base.group_multi_company" invisible="1"/>
+                    <field name="currency_id" invisible="1" column_invisible="1"/>
+                    <!-- <field name="date_from" invisible="1" column_invisible="1"/>
+                    <field name="date_to" invisible="1" column_invisible="1"/> -->
+                    
+                    <!-- Action buttons -->
+                    <button name="action_view_details" type="object" string="Details" 
+                            title="View Commission Details" icon="fa-list-alt" class="btn-link"/>
+                    <button name="action_view_vendor_bill" type="object" string="Bill" 
+                            title="View Vendor Bill" icon="fa-file-text-o" class="btn-link"
+                            invisible="not bill_id"/>
+                    <!-- show paid status only if bill_id is not null -->
+                    <field name="paid_status" invisible="not bill_id" widget="badge" 
+                           decoration-info="paid_status == 'unpaid'" 
+                           decoration-success="paid_status == 'paid'"
+                           decoration-warning="paid_status == 'partially_paid'"/> 
+                    <!-- <field name="paid_status" /> -->
+                </list>
+            </field>
+        </record>
+
+        <!-- Real-time Commission Report Form View -->
+        <record id="view_sales_commission_realtime_report_form" model="ir.ui.view">
+            <field name="name">sales.commission.realtime.report.form</field>
+            <field name="model">sales.commission.realtime.report</field>
+            <field name="arch" type="xml">
+                <form string="Commission Details" create="false" edit="false" delete="false">
+                    <header>
+                        <field name="period_status" widget="statusbar" statusbar_visible="upcoming,active,completed,closed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_details" type="object" class="oe_stat_button" icon="fa-list-alt">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Commission</span>
+                                    <span class="o_stat_text">Details</span>
+                                </div>
+                            </button>
+                        </div>
+                        
+                        <div class="oe_title">
+                            <h1>
+                                <field name="period" class="d-block"/>
+                            </h1>
+                            <h2>
+                                <field name="plan_id" class="d-block"/>
+                            </h2>
+                        </div>
+
+                        <group>
+                            <group string="Plan Information">
+                                <field name="commission_type" string="Plan Type"/>
+                                <field name="qualification_criteria"/>
+                                <field name="salesperson_id"/>
+                                <field name="team_id"/>
+                                <field name="target_id"/>
+                            </group>
+                            <group string="Targets &amp; Achievements">
+                                <field name="target_amount" widget="monetary" options="{'currency_field': 'currency_id'}" 
+                                       invisible="commission_type == 'qty'"/>
+                                <field name="target_units" invisible="commission_type == 'volume'"/>
+                                <field name="achieved_amount" widget="monetary" options="{'currency_field': 'currency_id'}" 
+                                       invisible="commission_type == 'qty'"/>
+                                <field name="achieved_units" invisible="commission_type == 'volume'"/>
+                                <field name="achievement_rate" />
+                                <field name="commission_earned" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="paid_status" widget="badge" 
+                                       decoration-info="paid_status == 'unpaid'" 
+                                       decoration-success="paid_status == 'paid'"
+                                       decoration-warning="paid_status == 'partially_paid'"/> 
+                                <field name="commission_slab_id" string="Applied Commission Slab"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Period Details">
+                            <group>
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Real-time Commission Report Search View -->
+        <record id="view_sales_commission_realtime_report_search" model="ir.ui.view">
+            <field name="name">sales.commission.realtime.report.search</field>
+            <field name="model">sales.commission.realtime.report</field>
+            <field name="arch" type="xml">
+                <search string="Search Real-time Commissions">
+                    <field name="salesperson_id"/>
+                    <field name="team_id"/>
+                    <field name="period"/>
+                    <field name="commission_type"/>
+                    <field name="plan_id"/>
+                    <field name="period_status"/>
+                    
+                    <!-- Filters -->
+                    <filter string="My Commissions" name="my_commissions" domain="[('salesperson_id', '=', uid)]"/>
+                    <filter string="Active Periods" name="active_periods" domain="[('period_status', '=', 'active')]"/>
+                    <filter string="Completed Periods" name="completed_periods" domain="[('period_status', '=', 'completed')]"/>
+                    <filter string="Closed Periods" name="closed_periods" domain="[('period_status', '=', 'closed')]"/>
+                    <filter string="With Commissions" name="with_commissions" domain="[('commission_earned', '>', 0)]"/>
+                    <filter string="Bill Generated" name="bill_generated" domain="[('bill_generated', '=', True)]"/>
+                    <filter string="Paid Status" name="paid_status" domain="[('paid_status', '=', 'paid')]"/>
+                    <separator/>
+                    <filter string="Volume-based Plans" name="volume_plans" domain="[('commission_type', '=', 'volume')]"/>
+                    <filter string="Quantity-based Plans" name="qty_plans" domain="[('commission_type', '=', 'qty')]"/>
+                    <separator/>
+                    <filter string="Per Sale Order Amount" name="so_amount" domain="[('qualification_criteria', '=', 'so_amount')]"/>
+                    <filter string="Per Amount Invoiced" name="amount_invoiced" domain="[('qualification_criteria', '=', 'amount_invoiced')]"/>
+                    <filter string="Per Quantity Sold" name="qty_sold" domain="[('qualification_criteria', '=', 'qty_sold')]"/>
+                    <filter string="Per Quantity Invoiced" name="qty_invoiced" domain="[('qualification_criteria', '=', 'qty_invoiced')]"/>
+                    
+                    <!-- Date filters -->
+                    <separator/>
+                    <filter string="Period" name="filter_date_to" date="date_to"/>
+                    
+
+                    <separator/>
+                    <filter string="This Month" name="this_month" 
+                            domain="[('date_from', '&lt;=', context_today().strftime('%Y-%m-01')), 
+                                     ('date_to', '&gt;=', (context_today().replace(day=1) + relativedelta(months=1, days=-1)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Quarter" name="this_quarter" 
+                            domain="[('date_from', '&lt;=', context_today().strftime('%Y-%m-%d')), 
+                                     ('date_to', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Year" name="this_year" 
+                            domain="[('date_from', '&lt;=', context_today().strftime('%Y-12-31')), 
+                                     ('date_to', '&gt;=', context_today().strftime('%Y-01-01'))]"/>
+
+                    <separator/>
+                    <filter string="Last Quarter" name="last_quarter" domain="[('date_to', '&lt;=', (context_today() + relativedelta(days=1)).strftime('%Y-%m-%d')), ('date_to', '&gt;=', (context_today() + relativedelta(months=-3)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Last Year" name="last_year" domain="[('date_to', '&lt;=', (context_today() + relativedelta(days=1)).strftime('%Y-%m-%d')), ('date_to', '&gt;=', (context_today() + relativedelta(years=-1)).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    
+                    <!-- Group By -->
+                    <group expand="1" string="Group By">
+                        <filter string="Commission Plan" name="group_by_commission_plan" context="{'group_by': 'plan_id'}"/>
+                        <filter string="Period" name="group_by_period" context="{'group_by': 'period'}"/>
+                        <filter string="Salesperson" name="group_by_salesperson" context="{'group_by': 'salesperson_id'}"/>
+                        <separator/>
+                        <filter string="Commission Type" name="group_by_commission_type" context="{'group_by': 'commission_type'}"/>
+                        <filter string="Sales Team" name="group_by_sales_team" context="{'group_by': 'team_id'}"/>
+                        <filter string="Period Status" name="group_by_period_status" context="{'group_by': 'period_status'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- My Commission (Real-time) Action -->
+        <record id="action_sales_commission_realtime_my_report" model="ir.actions.act_window">
+            <field name="name">My Commission</field>
+            <field name="res_model">sales.commission.realtime.report</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_sales_commission_realtime_report_search"/>
+            <field name="context">{
+                'search_default_my_commissions': 1,
+                'search_default_group_by_commission_plan': 1,
+                'search_default_group_by_period': 1,
+                'search_default_group_by_salesperson': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Real-time commission tracking!
+                </p>
+                <p>
+                    This view shows your commission earnings in real-time based on your sales performance.
+                    Commissions are calculated immediately when sales orders are confirmed or invoices are posted.
+                </p>
+            </field>
+        </record>
+
+        <!-- All Commissions (Real-time) Action for Administrators -->
+        <record id="action_sales_commission_realtime_all_reports" model="ir.actions.act_window">
+            <field name="name">All Commissions</field>
+            <field name="res_model">sales.commission.realtime.report</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_sales_commission_realtime_report_search"/>
+            <field name="context">{
+                'search_default_group_by_commission_plan': 1,
+                'search_default_group_by_period': 1,
+                'search_default_group_by_salesperson': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Real-time commission overview!
+                </p>
+                <p>
+                    This view shows all commission earnings in real-time across the organization.
+                    Monitor sales performance and commission calculations as they happen.
+                </p>
+            </field>
+        </record>
+
+        <!-- Commission Summary Dashboard Action -->
+        <record id="action_sales_commission_dashboard" model="ir.actions.act_window">
+            <field name="name">Commission Dashboard</field>
+            <field name="res_model">sales.commission.realtime.report</field>
+            <field name="view_mode">pivot,graph,tree</field>
+            <field name="search_view_id" ref="view_sales_commission_realtime_report_search"/>
+            <field name="context">{
+                'search_default_with_commissions': 1,
+                'pivot_measures': ['commission_earned', 'achieved_amount', 'achievement_rate'],
+                'pivot_column_groupby': ['period_status'],
+                'pivot_row_groupby': ['salesperson_id']
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Commission Analytics Dashboard!
+                </p>
+                <p>
+                    Analyze commission performance with interactive pivot tables and charts.
+                </p>
+            </field>
+        </record>
+
+        <!-- Pivot View for Analytics -->
+        <record id="view_sales_commission_realtime_report_pivot" model="ir.ui.view">
+            <field name="name">sales.commission.realtime.report.pivot</field>
+            <field name="model">sales.commission.realtime.report</field>
+            <field name="arch" type="xml">
+                <pivot string="Commission Analytics">
+                    <field name="salesperson_id" type="row"/>
+                    <field name="period_status" type="col"/>
+                    <field name="commission_earned" type="measure"/>
+                    <field name="achieved_amount" type="measure"/>
+                    <field name="achievement_rate" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!-- Graph View for Analytics -->
+        <record id="view_sales_commission_realtime_report_graph" model="ir.ui.view">
+            <field name="name">sales.commission.realtime.report.graph</field>
+            <field name="model">sales.commission.realtime.report</field>
+            <field name="arch" type="xml">
+                <graph string="Commission Trends" type="line">
+                    <field name="period" type="row"/>
+                    <field name="commission_earned" type="measure"/>
+                </graph>
+            </field>
+        </record>
+    </data>
+</odoo> 

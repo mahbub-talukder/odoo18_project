@@ -11,14 +11,14 @@
                 <field name="salesperson_id"/>
                 <field name="commission_type"/>
                 <field name="order_amount" widget="monetary"/>
-                <field name="commission_percentage" widget="percentage"/>
-                <field name="commission_amount" widget="monetary" sum="Total Commission"/>
+                <field name="commission_percentage" widget="number"/>
+                <field name="commission_amount" widget="number" sum="Total Commission"/>
                 <field name="invoice_payment_state" widget="badge" 
                        decoration-success="invoice_payment_state == 'paid'"
                        decoration-warning="invoice_payment_state == 'partial'"
                        decoration-danger="invoice_payment_state == 'not_paid'"/>
                 <field name="vendor_bill_state" widget="badge"/>
-                <field name="disbursement_date"/>
+                <field name="disbursement_date" widget="string"/>
                 <field name="is_paid" widget="boolean_toggle"/>
             </list>
         </field>

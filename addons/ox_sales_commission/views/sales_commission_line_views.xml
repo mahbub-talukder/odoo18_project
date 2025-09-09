@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Sales Commission Line Form View -->
+        <record id="sales_commission_line_form_view" model="ir.ui.view">
+            <field name="name">sales.commission.line.form</field>
+            <field name="model">sales.commission.line</field>
+            <field name="arch" type="xml">
+                <form string="Commission Slabs">
+                    <sheet>
+                        <group>
+                            <field name="target_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="commission_type" invisible="1"/>
+                            <field name="qualification_criteria" invisible="1"/>
+                            <field name="completion_target_units" invisible="commission_type == 'volume'"/>
+                            <field name="completion_target_amount" widget="monetary" invisible="commission_type == 'qty'"/>
+                            <field name="completion_percent" widget="percentage"/>
+                            <field name="commission_amount" widget="monetary"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Sales Commission Line Tree View -->
+        <record id="sales_commission_line_tree_view" model="ir.ui.view">
+            <field name="name">sales.commission.line.tree</field>
+            <field name="model">sales.commission.line</field>
+            <field name="arch" type="xml">
+                <list editable="bottom">
+                    <field name="target_id" column_invisible="1"/>
+                    <field name="currency_id" column_invisible="1"/>
+                    <field name="commission_type" column_invisible="1"/>
+                    <field name="completion_target_units"  invisible="commission_type == 'volume'"/>   
+                    <field name="completion_target_amount"  widget="monetary" invisible="commission_type == 'qty'"/>
+                    <field name="completion_percent" widget="percentage"/>
+                    <field name="commission_amount" widget="monetary"/>
+                    <button name="action_delete_slab" type="object" string="" class="btn-link text-danger" icon="fa-trash" title="Delete this commission slab" confirm="Are you sure you want to delete this commission slab?"/>
+                </list>
+            </field>
+        </record>
+    </data>
+</odoo> 

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Main Menu: Sales Commission -->
+        <menuitem id="sales_commission_menu_root" 
+                  name="Commission" 
+                  parent="sale.sale_menu_root" 
+                  sequence="50"
+                  groups="ox_sales_commission.group_sales_commission_user">
+            
+            <!-- Sub-menu: Commission Plans -->
+            <menuitem id="sales_commission_menu_plans" 
+                      name="Commission Plans" 
+                      action="ox_sales_commission.action_sales_commission_plan" 
+                      sequence="10"
+                      groups="ox_sales_commission.group_sales_commission_admin,ox_sales_commission.group_sales_commission_user"/>
+            
+            <!-- Sub-menu: Real-time Reports -->
+            <menuitem id="sales_commission_menu_realtime_reports" 
+                      name="My Commissions" 
+                      action="ox_sales_commission.action_sales_commission_realtime_my_report" 
+                      sequence="20"
+                      groups="ox_sales_commission.group_sales_commission_user"/>
+            
+            <!-- Sub-menu: All Commission Reports (Admin Only) -->
+            <menuitem id="sales_commission_menu_all_reports" 
+                      name="All Commissions" 
+                      action="ox_sales_commission.action_sales_commission_realtime_all_reports" 
+                      sequence="25"
+                      groups="ox_sales_commission.group_sales_commission_admin"/>
+
+            <!-- Sub-menu: Historical Commission Reports -->
+            <!-- <menuitem id="sales_commission_menu_historical_reports" 
+                      name="Historical Reports" 
+                      action="ox_sales_commission.action_sales_commission_report" 
+                      sequence="30"
+                      groups="ox_sales_commission.group_sales_commission_admin"/> -->
+
+            <!-- Sub-menu: Commission Slabs/Rates -->
+            <!-- <menuitem id="sales_commission_menu_commission_slabs" 
+                      name="Commission Slabs" 
+                      action="ox_sales_commission.action_sales_commission_line" 
+                      sequence="35"
+                      groups="ox_sales_commission.group_sales_commission_admin"/> -->
+
+            <!-- Sub-menu: Targets -->
+            <!-- <menuitem id="sales_commission_menu_targets" 
+                      name="Targets" 
+                      action="ox_sales_commission.action_sales_commission_target" 
+                      sequence="40"
+                      groups="ox_sales_commission.group_sales_commission_admin"/> -->
+                      
+        </menuitem>
+    </data>
+</odoo>

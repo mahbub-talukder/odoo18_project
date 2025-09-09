@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Sales Commission Real-time Report Detail Tree View -->
+        <record id="view_sales_commission_realtime_report_detail_tree" model="ir.ui.view">
+            <field name="name">sales.commission.realtime.report.detail.tree</field>
+            <field name="model">sales.commission.realtime.report.detail</field>
+            <field name="arch" type="xml">
+                <list string="Commission Details" create="false" edit="false" delete="false">
+                    <field name="source_type" widget="badge" 
+                           decoration-primary="source_type == 'sale_order'"
+                           decoration-success="source_type == 'invoice'"/>
+                    <field name="document_number" string="Document Number"/>
+                    
+                    <field name="date_achievement"/>
+                    <field name="partner_id"/>
+                    <field name="product_id"/>
+                    <field name="product_category_id"/>
+                    <field name="achieved_units" string="Qty" sum="Total Qty"/>
+                    <field name="achieved_amount" widget="monetary" options="{'currency_field': 'currency_id'}" 
+                           string="Amount" sum="Total Amount"/>
+<!--                     
+                    <field name="salesperson_id" invisible="1" /> -->
+                    <field name="currency_id" invisible="1"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Sales Commission Real-time Report Detail Form View -->
+        <record id="view_sales_commission_realtime_report_detail_form" model="ir.ui.view">
+            <field name="name">sales.commission.realtime.report.detail.form</field>
+            <field name="model">sales.commission.realtime.report.detail</field>
+            <field name="arch" type="xml">
+                <form string="Commission Detail" create="false" edit="false" delete="false">
+                    <sheet>
+                        <group>
+                            <group string="Source Information">
+                                <field name="source_type" widget="badge"/>
+                                <field name="document_number"/>
+                                <field name="sales_order_id" invisible="source_type != 'sale_order'"/>
+                                <field name="invoice_id" invisible="source_type != 'invoice'"/>
+                                <field name="date_achievement"/>
+                            </group>
+                            <group string="Document Information">
+                                <field name="partner_id"/>
+                                <field name="salesperson_id"/>
+                                <field name="currency_id"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <group string="Product Information">
+                                <field name="product_id"/>
+                                <field name="product_category_id"/>
+                            </group>
+                            <group string="Achievement Information">
+                                <field name="achieved_units"/>
+                                <field name="achieved_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Sales Commission Real-time Report Detail Search View -->
+        <record id="view_sales_commission_realtime_report_detail_search" model="ir.ui.view">
+            <field name="name">sales.commission.realtime.report.detail.search</field>
+            <field name="model">sales.commission.realtime.report.detail</field>
+            <field name="arch" type="xml">
+                <search string="Commission Details">
+                    <field name="document_number" string="Document Number"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="product_id" string="Product"/>
+                    <field name="product_category_id" string="Category"/>
+                    <field name="salesperson_id" string="Salesperson"/>
+                    <field name="source_type" string="Source"/>
+                    
+                    <filter name="filter_sale_orders" string="Sale Orders" 
+                            domain="[('source_type', '=', 'sale_order')]"/>
+                    <filter name="filter_invoices" string="Invoices" 
+                            domain="[('source_type', '=', 'invoice')]"/>
+                    
+                    <separator/>
+                    <filter name="filter_current_month" string="Current Month"
+                            domain="[('date_achievement', '>=', datetime.date.today().strftime('%Y-%m-01')),
+                                   ('date_achievement', '&lt;', (datetime.date.today().replace(day=1) + datetime.timedelta(days=32)).strftime('%Y-%m-01'))]"/>
+                    <filter name="filter_current_year" string="Current Year"
+                            domain="[('date_achievement', '>=', datetime.date.today().strftime('%Y-01-01')),
+                                   ('date_achievement', '&lt;=', datetime.date.today().strftime('%Y-12-31'))]"/>
+                    
+                    <separator/>
+                    <group expand="1" string="Group By">
+                        <filter name="group_by_source_type" string="Source Type" context="{'group_by': 'source_type'}"/>
+                        <filter name="group_by_document_number" string="Document Number" context="{'group_by': 'document_number'}"/>
+                        <filter name="group_by_partner" string="Customer" context="{'group_by': 'partner_id'}"/>
+                        <filter name="group_by_product_category" string="Product Category" context="{'group_by': 'product_category_id'}"/>
+                        <filter name="group_by_product" string="Product" context="{'group_by': 'product_id'}"/>
+                        <filter name="group_by_salesperson" string="Salesperson" context="{'group_by': 'salesperson_id'}"/>
+                        <filter name="group_by_date" string="Achievement Date" context="{'group_by': 'date_achievement:month'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action for Sales Commission Real-time Report Detail -->
+        <record id="action_sales_commission_realtime_report_detail" model="ir.actions.act_window">
+            <field name="name">Commission Details</field>
+            <field name="res_model">sales.commission.realtime.report.detail</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_sales_commission_realtime_report_detail_search"/>
+            <field name="context">{
+                'create': False,
+                'search_default_group_by_source_type': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No commission details found!
+                </p>
+                <p>
+                    This view shows detailed breakdown of commission calculations
+                    from sale orders and invoices.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo> 
