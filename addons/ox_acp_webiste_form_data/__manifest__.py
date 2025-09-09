@@ -1,0 +1,15 @@
+{
+    'name': 'ACP Website Form Data',
+    'summary': 'Module for handling form data submission from the ACP website to Odoo.',
+    'description': 'This module provides API endpoints and logic to receive and process contact form submissions from the PHP website, create/update Odoo contacts, and manage membership numbers and portal invitations.',
+    'version': '1.0',
+    'author': 'Your Name',
+    'website': 'http://www.yourwebsite.com',
+    'category': 'Website',
+    'depends': ['base', 'contacts', 'portal'],
+    'data': [],
+    'demo': [],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
+}

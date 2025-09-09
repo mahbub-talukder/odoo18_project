@@ -1,0 +1,31 @@
+Business Requirement:
+- in the php project, here are a contact form page:
+    - join-the-family.php
+    enchance/modify the form page fields should be like:
+        - full_name (label - Nom complet)
+        - email (label - Email)
+        - phone (label - Téléphone)
+        - x_studio_gender (male or female radio button) (label - Sexe)
+        - profession (label - Profession)
+        - place_of_birth (label - Lieu de naissance)
+        - nationality (select field) (label - Pays) [made and api to fecth country from odoo [res.country model] and use on it]
+        - date_of_birth (label - Date de naissance)
+      
+- after submit the form, the data will be exchanged between the php project and odoo through api (http request)
+
+- in oddo 18, based on the data, 
+    1. Do create a new record in the contact. [do set proper validation for the fields]
+    2. Do send and portal password reset email to the contact.
+    3. You will find a field 'id_number' in res.partner model which is `membership number`, after create the new record in the contact.
+    4. Finally send the response to the php project. if success then message should be like
+        - "Your membership number is: <membership number>, please check your email for the portal password reset email."
+
+    some validation message should be like:
+    1. Already Registered Email Validation Message
+        If a user tries to register with an already registered email, show this message on the form:
+        “This email address is already registered. Please use the Membership Portal to log in or reset your password.”
+
+Note:
+    in odoo 18, create new module name "ox_acp_webiste_form_data":
+    - inherit the res.partner model (all fields are already in the res.partner model), you just need to save the data.
+    - create api for the form data and do fullfill the requirements as described above.

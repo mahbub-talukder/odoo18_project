@@ -289,3 +289,74 @@ footer{
   
 
 }
+
+/* Custom form input and select styles */
+.form-input-custom,
+.form-select-custom {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-input-custom:focus,
+.form-select-custom:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-select-custom {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 2.5rem;
+}
+
+.form-label-custom {
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Style for radio buttons */
+.form-check-input[type="radio"] {
+    border-radius: 50%; /* Ensures it's a circle */
+    width: 1.25em;
+    height: 1.25em;
+    margin-top: 0.25em;
+    margin-right: 0.5em;
+    vertical-align: top;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.form-check-input[type="radio"]:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e");
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.form-check-label {
+    font-weight: 400;
+    color: #495057;
+    cursor: pointer;
+}
