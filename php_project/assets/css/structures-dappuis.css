@@ -1,0 +1,56 @@
+.parent-1{
+	background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), 
+              url('../img/worldback.png');
+			  background-repeat: no-repeat;
+			  background-position: center;
+			  
+			  padding: 5% 10px;
+	
+}
+
+.yt-responsive {
+    width: 90%;
+  }
+  
+  .yt-responsive iframe {
+    aspect-ratio: 16/9;
+  }
+
+.topicstyle-2{
+	
+	color: #1109b4;
+	font-family: 'League Spartan', sans-serif !important;
+	font-weight: 900 !important;
+	font-size: 73px;
+	
+}
+
+.news-item {
+      background-color: #f2f4f3; /* Bootstrap blue */
+      color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+	  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+	  height:90%;
+    }
+
+    .news-top {
+      padding: 30px;
+    }
+
+    .news-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+	  border-radius: 10px;
+    }
+	
+	.news-title-one{
+		
+	}
+	
+	.news-description-one{
+		width:80%;
+		color:black;
+	}

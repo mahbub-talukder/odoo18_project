@@ -1,0 +1,7 @@
+.yt-responsive {
+    width: 90%;
+  }
+  
+  .yt-responsive iframe {
+    aspect-ratio: 16/9;
+  }

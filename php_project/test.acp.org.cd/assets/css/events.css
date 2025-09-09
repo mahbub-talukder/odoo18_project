@@ -1,0 +1,51 @@
+.events-parent{
+    background-image: url('../img/back-happy.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    padding: 0px 80px;
+}
+
+.events-blue{
+    width: 80%;
+    background-color: #0805b1;
+    border-radius: 20px;
+    padding: 0px 50px;
+    height: 130px;
+}
+
+.events-blue-parent{
+    position: relative;
+  top: 420px; 
+}
+
+.events-parent-child{
+    color: white;
+    width: 40%;
+}
+
+.events-parent-child h2{
+    font-size: 60px;
+
+}
+
+
+
+@media (max-width: 576px) {
+    .events-parent-child{
+    color: white;
+    width: 100%;
+}
+
+.events-parent-child h2{
+    font-size: 30px;
+
+}
+
+.events-parent{
+    padding: 0px 5px;
+}
+}

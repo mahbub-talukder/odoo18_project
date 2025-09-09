@@ -1,0 +1,260 @@
+.contact-topic-box{
+    width: 60%;
+    font-family: 'Ubuntu', sans-serif !important;
+
+}
+
+.contact-topic{
+    text-align: center;
+    color: #162651;
+    font-family: 'Ubuntu', sans-serif !important;
+}
+
+.form-box{
+    padding: 50px 50px;
+    background-color: #162651;
+    border-radius: 30px;
+}
+
+.form-box-topic{
+    color: white;
+    font-size: 40px;
+    font-weight: 900;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-inp{
+    height: 45px;
+    border-radius: 15px;
+    width: 100%;
+    border: none;
+}
+
+.form-textarea-labe{
+ 
+    border-radius: 15px;
+    width: 100%;
+    border: none;    
+
+}
+
+.form-labe{
+    color: rgb(235, 235, 235);
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.btn-submit{
+    background-color: #ffd124; /* subtle top-to-bottom gradient */
+    color: #0503a6;
+    padding: 10px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    margin: 4px 10px;
+    cursor: pointer;
+    font-weight: 500;
+    border-radius: 10px;
+    box-sizing: border-box;
+    transition: transform 0.1s ease, background 0.2s ease;
+    border: none;
+}
+
+.btn-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.line-something {
+        display: flex;
+        width: 100%;
+        height: 10px; /* You can adjust thickness */
+    }
+
+    .line-something > div {
+        flex: 1;
+    }
+
+    .line-blue {
+        background-color: #1109b4; /* Bootstrap blue */
+    }
+
+    .line-brown {
+        background-color: #8b0807; /* SaddleBrown */
+    }
+
+    .line-yellow {
+        background-color: #f5d917; /* Gold */
+    }
+
+.contact-paragraph{
+    width: 80%;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    color: #162651;
+    font-family: 'Ubuntu', sans-serif !important;
+}
+
+.contact-paragraph-1{
+
+}
+
+.topicstyle-1{
+    color: #0805b1;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.faq-toggle {
+    
+    
+    color: black;
+    border-radius: 15px !important;
+    transition: background-color 0.3s;
+    margin-bottom: 20px;
+  }
+
+  .faq-toggle:not(.collapsed) {
+    background-color: white !important; /* White when open */
+    color: black;
+  }
+
+  .accordion-button::after {
+    display: none !important; /* Hide Bootstrap’s default arrow */
+  }
+
+  .arrow-icon svg {
+    transition: transform 0.3s;
+  }
+
+  .faq-toggle:not(.collapsed) .arrow-icon svg {
+    transform: rotate(180deg); /* Rotate arrow when open */
+  }
+
+  .accordion-item {
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.accordion-button {
+  background: linear-gradient(to right, rgba(255, 235, 59, 1), rgba(255, 235, 59, 0)) !important; /* Yellow */
+  border-radius: 15px !important;
+  box-shadow: none !important;
+}
+
+.accordion-button:not(.collapsed) {
+  background: linear-gradient(to right, rgb(255, 255, 255), rgb(255, 255, 255)) !important;
+  border-radius: 15px !important;
+  border: 2px solid #162651 !important; /* Yellow */
+}
+
+.accordion-body {
+  background-color: transparent !important;
+  padding-top: 0.5rem;
+}
+
+.video-background {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.video-background video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translateX(-50%) translateY(-50%);
+  object-fit: cover;
+}
+
+    .centered-content {
+      position: relative;
+      z-index: 2;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .centered-box {
+      background: #fdfdfd;
+      padding: 60px;
+      border-radius: 10px;
+      max-width: 60%;
+      margin: 0 auto;
+    }
+
+.text-icon{
+    font-size: 12px !important;
+    font-family: 'Poppins', sans-serif;
+}
+
+.icon-img{
+    width: 30px;
+}
+
+.topic{
+  color: #1109b4;
+}
+
+.signed{
+  width: 100%;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    min-height: 1.2em;
+}
+
+.success-popup {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 40px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+    transition: top 0.3s ease-in-out;
+    text-align: center;
+}
+
+.success-popup.show {
+    top: 20px;
+}
+
+.close-popup {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+}
+
+.close-popup:hover {
+    opacity: 0.8;
+}
+
+@media (max-width: 576px) {
+
+  .centered-box {
+    padding: 20px;
+    max-width: 98%;
+  }
+
+}

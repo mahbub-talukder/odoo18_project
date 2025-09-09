@@ -1,0 +1,104 @@
+.logo-parent {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  background-color: white;
+  border-radius: 50%;
+  padding: 30px;  /* reduced from 30px */
+  width: 160px;   /* reduced from 200px */
+  height: 160px;  /* reduced from 200px */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  overflow: hidden; /* crop image to circle */
+}
+
+.line-something {
+        display: flex;
+        width: 100%;
+        height: 8px; /* You can adjust thickness */
+    }
+
+    .line-something > div {
+        flex: 1;
+    }
+
+    .line-blue {
+        background-color: #1109b4; /* Bootstrap blue */
+    }
+
+    .line-brown {
+        background-color: #8b0807; /* SaddleBrown */
+    }
+
+    .line-yellow {
+        background-color: #f5d917; /* Gold */
+    }
+
+.topic{
+    color: #1109b4;
+    font-weight: 900;
+    font-size: 60px;
+}
+
+.team-card {
+        border: none;
+        background: transparent;
+        text-align: center;
+    }
+
+    .team-img-wrapper {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 0.5rem;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+        box-shadow: inset -4px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .team-img-wrapper img,
+    .team-img-wrapper svg {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .team-name {
+        color: #000000; /* Bootstrap gray */
+        margin-bottom: 0.2rem;
+        font-weight: 700;
+    }
+
+    .team-surname {
+        color: #6c757d;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        margin-bottom: 0.2rem;
+        font-weight: 500;
+    }
+
+    .team-position {
+        color: #8b0807; /* Bootstrap blue */
+        font-size: 0.85rem;
+        width: 100%;
+        text-align: center;
+    }
+
+    .team-title{
+        color: #1109b4;
+        font-weight: 700;
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .paragraph-text-1{
+        width: 40%;
+    }
+
+    @media (max-width: 768px) {
+        .paragraph-text-1 {
+            width: 95%;
+        }
+    }

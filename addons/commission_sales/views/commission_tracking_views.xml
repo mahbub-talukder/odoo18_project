@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View with Grouping Support -->
+    <record id="view_commission_tracking_list" model="ir.ui.view">
+        <field name="name">commission.tracking.list</field>
+        <field name="model">commission.tracking</field>
+        <field name="arch" type="xml">
+            <list string="Commission Tracking" create="false" edit="false">
+                <field name="sale_order_id"/>
+                <field name="customer_id"/>
+                <field name="salesperson_id"/>
+                <field name="commission_type"/>
+                <field name="order_amount" widget="monetary"/>
+                <field name="commission_percentage" widget="percentage"/>
+                <field name="commission_amount" widget="monetary" sum="Total Commission"/>
+                <field name="invoice_payment_state" widget="badge" 
+                       decoration-success="invoice_payment_state == 'paid'"
+                       decoration-warning="invoice_payment_state == 'partial'"
+                       decoration-danger="invoice_payment_state == 'not_paid'"/>
+                <field name="vendor_bill_state" widget="badge"/>
+                <field name="disbursement_date"/>
+                <field name="is_paid" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+    
+    <!-- Search View with Grouping -->
+    <record id="view_commission_tracking_search" model="ir.ui.view">
+        <field name="name">commission.tracking.search</field>
+        <field name="model">commission.tracking</field>
+        <field name="arch" type="xml">
+            <search string="Commission Search">
+                <field name="salesperson_id"/>
+                <field name="customer_id"/>
+                <field name="sale_order_id"/>
+                <filter string="First Order" name="first_order" 
+                        domain="[('commission_type', '=', 'first_order')]"/>
+                <filter string="Residual" name="residual" 
+                        domain="[('commission_type', '=', 'residual')]"/>
+                <filter string="Paid" name="paid" domain="[('is_paid', '=', True)]"/>
+                <filter string="Unpaid" name="unpaid" domain="[('is_paid', '=', False)]"/>
+                <separator/>
+                <filter string="Invoice Paid" name="invoice_paid" 
+                        domain="[('invoice_payment_state', '=', 'paid')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Salesperson" name="group_salesperson" 
+                            context="{'group_by': 'salesperson_id'}"/>
+                    <filter string="Disbursement Frequency" name="group_frequency" 
+                            context="{'group_by': 'disbursement_frequency'}"/>
+                    <filter string="Commission Type" name="group_type" 
+                            context="{'group_by': 'commission_type'}"/>
+                    <filter string="Payment Status" name="group_payment" 
+                            context="{'group_by': 'invoice_payment_state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,203 @@
+.bottom-blue{
+    height: 150px;
+    background-color: #0805b1;
+    border-radius: 20px;
+    padding: 0px 50px;
+    display: flex;
+    justify-content: center; /* pushes items to far ends */
+    align-items: center; 
+    padding: 0px 50px;
+}
+
+.bottom-blue-paragraph{
+    color: white;
+    font-size: 14px;
+    padding: 20px 0px;
+    width: 40%;
+}
+
+.bottom-blue-content {
+    display: flex;
+    justify-content: space-between; /* pushes items to far ends */
+    align-items: center;   
+    width: 100%;         /* vertically aligns items */
+}
+
+.card-box {
+    background-image: url('../img/woman-holding-card.png');
+    min-height: 500px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: right;
+    padding: 30px 100px;
+}
+
+.card-back{
+    width: 100%;
+    margin-top: 10px;
+    box-shadow: 
+    -20px 0 30px rgba(0, 0, 0, 0.4), /* left */
+    0 -20px 30px rgba(0, 0, 0, 0.3), /* top */
+    0 20px 30px rgba(0, 0, 0, 0.3);
+}
+
+.cards-parent{
+    width: 30%;
+}
+
+.image-crop-container {
+display: none;
+}
+
+.focus-right-image {
+  position: absolute;
+  left: 0;
+  height: 100%;
+  object-fit: cover;
+}
+
+.topicstyle-1{
+    color: #0805b1;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.small-logo-logo{
+    width: 80px;
+}
+
+.form-big-parent{
+    background-color: #ffffff;
+    padding: 100px 0px;
+    width: 100%;   
+}
+
+.paragraph-to-form{
+    width: 80%;
+    margin-top: 60px;
+    line-height: 30px;
+}
+
+.form-label-custom{
+
+    color: #022452;
+    font-weight: bold;
+    font-size: 15px;
+    margin-bottom: 10px;
+    
+
+}
+
+.form-input-custom{
+    background-color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    width: 100%;
+    background-color: #fff4f4;
+}
+
+.submit-button{
+    background-color: #ffd124;
+    padding: 10px 80px;
+    border-radius: 10px;
+    border: none;
+    text-decoration: none;
+    font-weight: 900;
+    margin-top: 50px;
+    color: white;
+}
+
+    .acp-contain {
+  display: flex;
+  align-items: flex-end;     /* Align letters to the bottom of the flex container */
+  gap: 10px;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: 700;
+  font-size: 100px;
+  line-height: 1;            /* Eliminate excess vertical space */
+}
+
+.letter {
+  display: block;            /* Avoid inline-related quirks */
+  line-height: 1em;
+  padding: 0;
+  margin: 0;
+}
+
+.letter-a {
+  color: #1109b4;
+}
+
+.letter-c {
+  color: #8b0807;
+}
+
+.letter-p {
+  color: #f5d917;
+}
+
+@media (max-width: 576px) { /* styles */
+
+   .cards-parent{
+    width: 100%;
+}
+
+.card-box {
+    background: none;
+}
+
+.bottom-blue-paragraph{
+    color: white;
+    font-size: 10px;
+    padding: 10px 0px;
+    width: 50%;
+}
+
+.bottom-blue{
+    
+    padding: 0px 20px;
+}
+
+.image-crop-container {
+    display: block;
+  width: 100%;
+height: 200px; /* or any height you need */
+  overflow: hidden;
+  position: relative;
+}
+
+}
+
+.line-something {
+        display: flex;
+        width: 100%;
+        height: 8px; /* You can adjust thickness */
+    }
+
+    .line-something > div {
+        flex: 1;
+    }
+
+    .line-blue {
+        background-color: #1109b4; /* Bootstrap blue */
+    }
+
+    .line-brown {
+        background-color: #8b0807; /* SaddleBrown */
+    }
+
+    .line-yellow {
+        background-color: #f5d917; /* Gold */
+    }
+
+    .genity{
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 20px;
+}
+
+

@@ -1,0 +1,313 @@
+.centered-box {
+       /* Adjust height as needed */
+      
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 3rem;
+      
+      border-radius: 10px;
+    }
+	
+.parent-1{
+	background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), 
+              url('../img/worldback.png');
+			  background-repeat: no-repeat;
+			  background-position: center;
+			  
+			  padding: 5% 10px;
+	
+}
+
+.yt-responsive {
+    width: 90%;
+  }
+  
+  .yt-responsive iframe {
+    aspect-ratio: 16/9;
+  }
+
+.paragraph-1{
+	padding: 5px 20%;
+}
+
+.topic-h{
+	font-size: 60px;
+	font-weight: 700;
+	color: #1109b4;
+	 font-family: 'League Spartan', sans-serif !important;
+}
+
+
+
+.hero-container {
+  position: relative;
+  width: 100%;
+  height: 80vh;
+  overflow: hidden;
+  border-radius: 60px;
+}
+
+.hero-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  border-radius: 60px;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.hero-content > .col-12,
+.hero-content > .col-md-6 {
+  height: 100%; /* ensure column inherits height */
+  display: flex;
+  align-items: center; /* vertical centering within column */
+}
+
+.content-box {
+	position: relative;
+  background: linear-gradient(to bottom right, #fff);
+  color: #1109b4;
+  border-radius: 60px;
+  width: 100%;
+  height: 100%;
+  padding: 5%;
+  border: 4px solid #1109b4;
+}
+
+.button-link{
+	
+	padding:10px 30%;
+	border-radius: 20px;
+	text-decoration: none;
+	color: #0400b7;
+	font-weight: bold;
+	
+}
+
+.paragraph-3{
+	color: black;
+	width: 90%;
+}
+
+.space1{
+	height: 10%;
+}
+
+.space2{
+	height: 10%;
+}
+
+.space3{
+	height: 15%;
+}
+
+.vertical-space-add{
+	
+	height: 50px;
+}
+
+
+    @media (max-width: 768px) {
+      .content-box {
+        background: linear-gradient(
+  to bottom right,
+  rgba(255, 255, 255, 0.3),   /* #ffd124 */
+);
+        text-align: center;
+      }
+	  
+	  .hero-container {
+  position: relative;
+  width: 100%;
+  min-height: 40vh; /* Only here */
+  overflow: hidden;
+}
+    }
+	
+	
+.fifth-parent{
+  min-height: 100vh;
+}
+
+.executive-team-parent{
+  padding: 30px 100px;
+}
+
+.executive-team{
+  padding: 50px 200px;
+  background: linear-gradient(to bottom left, #e1e1e1, #ffffff);
+  border-radius: 40px;
+  box-shadow: -30px 30px 60px rgba(0, 0, 0, 0.5);
+}
+
+.topic-box{
+  width: 80%;
+  margin-bottom: 20px;
+}
+
+.about-text-things{
+
+}
+
+.team-card {
+        border: none;
+        background: transparent;
+        text-align: center;
+    }
+
+    .team-img-wrapper {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 0.5rem;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+        box-shadow: inset -4px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .team-img-wrapper img,
+    .team-img-wrapper svg {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .team-name {
+        color: #6c757d; /* Bootstrap gray */
+        margin-bottom: 0.2rem;
+        font-weight: 500;
+    }
+
+    .team-surname {
+        color: #6c757d;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        margin-bottom: 0.2rem;
+        font-weight: 500;
+    }
+
+    .team-position {
+        color: #0805b1; /* Bootstrap blue */
+        font-size: 0.85rem;
+        width: 100%;
+        text-align: center;
+    }
+	
+.topicstyle-1{
+    color: #1109b4;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.topicstyle-2{
+    color: #000;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+
+.vision-picture{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.faq-toggle {
+    
+    
+    color: black;
+    border-radius: 15px !important;
+    transition: background-color 0.3s;
+    margin-bottom: 20px;
+  }
+
+  .faq-toggle:not(.collapsed) {
+    background-color: white !important; /* White when open */
+    color: black;
+  }
+
+  .accordion-button::after {
+    display: none !important; /* Hide Bootstrap’s default arrow */
+  }
+
+  .arrow-icon svg {
+    transition: transform 0.3s;
+  }
+
+  .faq-toggle:not(.collapsed) .arrow-icon svg {
+    transform: rotate(180deg); /* Rotate arrow when open */
+  }
+
+  .accordion-item {
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.accordion-button {
+  background: linear-gradient(to right, rgba(255, 235, 59, 1), rgba(255, 235, 59, 0)) !important; /* Yellow */
+  border-radius: 15px !important;
+  box-shadow: none !important;
+}
+
+.accordion-button:not(.collapsed) {
+  background: linear-gradient(to right, rgb(255, 255, 255), rgb(255, 255, 255)) !important;
+  border-radius: 15px !important;
+  border: 2px solid #162651 !important; /* Yellow */
+}
+
+.accordion-body {
+  background-color: transparent !important;
+  padding-top: 0.5rem;
+}
+
+@media (max-width: 776px) {
+
+  .executive-team{
+    padding: 50px 20px;
+    width: 100%;
+  }
+
+  .topicstyle-1{
+    font-size: 30px;
+  }
+
+
+	  .topicstyle-2{
+    font-size: 30px;
+  }
+
+  .tozali{
+  width: 100%;
+}
+
+.tozali-p{
+
+  width: 100%;
+
+}
+
+.paragraph-1{
+	padding: 5px 5%;
+}
+
+}

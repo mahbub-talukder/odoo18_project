@@ -1,0 +1,280 @@
+
+.first-parent{
+    display: flex;
+  justify-content: center;
+  align-items: center;
+    min-height: 75vh;
+    width: 100%;
+    background: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), 
+              url('../img/worldback.png');
+                background-position: center center; /* Focus on the center */
+  background-repeat: no-repeat;
+}
+
+.about-three{
+  width: 100%;
+}
+
+.nous-sommes{
+  font-size: 200px;
+  font-weight: 700 !important; 
+  font-family: 'Ubuntu', sans-serif !important;
+}
+
+.rejoindre{
+  color: #0805b1;
+  text-decoration: none;
+  background-color: #FFD700;
+  padding: 10px 80px;
+  border-radius: 50px;
+  margin-top: 100px
+}
+
+.circular-div {
+   width: 100%;               /* Adjust width */
+  height: 50vh;              /* Half of the width for perfect semi-circle */
+  background-color: blue;      /* Or any color */
+  border-bottom-left-radius: 60%;
+  border-bottom-right-radius: 60%;
+  overflow: hidden;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.second-parent{
+    padding-top: 160px;
+    padding-bottom: 160px;
+    min-height: 100vh;
+}
+
+.topicstyle-1{
+    color: #0805b1;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.multiple-photos{
+  width: 100%;
+}
+
+.third-parent{
+  min-height: 100vh;
+  padding: 20px 0px;
+}
+
+.vision-picture{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.third-parent-left-side{
+  background: linear-gradient(to right, rgba(245, 216, 4, 1), rgba(245, 216, 4, 0));
+  padding: 0px 100px;
+  
+}
+
+.fourth-parent{
+  background-image: url('../img/worldback.png');
+  min-height: 90vh;
+    background-position: center center; /* Focus on the center */
+  background-repeat: no-repeat;
+}
+
+.fifth-parent{
+  min-height: 100vh;
+}
+
+.executive-team-parent{
+  padding: 30px 100px;
+}
+
+.executive-team{
+  padding: 50px 200px;
+  background: linear-gradient(to bottom left, #e1e1e1, #ffffff);
+  border-radius: 40px;
+  box-shadow: -30px 30px 60px rgba(0, 0, 0, 0.5);
+}
+
+.topic-box{
+  width: 80%;
+  margin-bottom: 20px;
+}
+
+.about-text-things{
+
+}
+
+.team-card {
+        border: none;
+        background: transparent;
+        text-align: center;
+    }
+
+    .team-img-wrapper {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 0.5rem;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+        box-shadow: inset -4px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .team-img-wrapper img,
+    .team-img-wrapper svg {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .team-name {
+        color: #6c757d; /* Bootstrap gray */
+        margin-bottom: 0.2rem;
+        font-weight: 500;
+    }
+
+    .team-surname {
+        color: #6c757d;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        margin-bottom: 0.2rem;
+        font-weight: 500;
+    }
+
+    .team-position {
+        color: #0805b1; /* Bootstrap blue */
+        font-size: 0.85rem;
+        width: 100%;
+        text-align: center;
+    }
+
+     .line-something {
+        display: flex;
+        width: 100%;
+        height: 13px; /* You can adjust thickness */
+    }
+
+    .line-something > div {
+        flex: 1;
+    }
+
+    .line-blue {
+        background-color: #1109b4; /* Bootstrap blue */
+    }
+
+    .line-brown {
+        background-color: #8b0807; /* SaddleBrown */
+    }
+
+    .line-yellow {
+        background-color: #f5d917; /* Gold */
+    }
+
+    .line-group {
+  gap: 0px;
+}
+
+.line-segment {
+  width: 40px;
+  height: 5px;
+  border-radius: 2px;
+}
+
+.bg-blue {
+  background-color: #1109b4; /* Bootstrap primary or any custom blue */
+}
+
+.bg-brown {
+  background-color: #8b0807; /* SaddleBrown */
+}
+
+.bg-yellow {
+  background-color: #f5d917; /* Gold */
+}
+
+.notre{
+  font-size: 40px;
+  
+}
+
+.acp-container {
+  display: flex;
+  gap: 10px;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: 700;
+  font-size: 100px;
+  width: 100%;
+}
+
+.letter-a {
+  color: #1109b4; /* Blue */
+}
+
+.letter-c {
+  color: #8b0807; /* Orange/Red */
+}
+
+.letter-p {
+  color: #f5d917; /* Green */
+}
+
+.text-acp {
+  color: #000; /* Black */
+  font-size: 15px;
+  font-family: 'Ubuntu', sans-serif !important;
+
+}
+
+.about-text-things {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Horizontal centering */
+  justify-content: center; /* Vertical centering (if height is constrained) */
+  text-align: center;
+}
+
+.tozali{
+  margin-top: 50px;
+  font-size: 30px;
+  font-weight: 500;
+  width: 60%;
+  font-family: 'Ubuntu', sans-serif !important;
+}
+
+.tozali-p{
+
+  width: 60%;
+  font-family: 'Ubuntu', sans-serif !important;
+}
+
+.vision-paragraph{
+  font-family: 'Ubuntu', sans-serif !important;
+  font-size: 20px;
+}
+
+@media (max-width: 576px) {
+
+  .executive-team{
+    padding: 50px 20px;
+    width: 100%;
+  }
+
+  .topicstyle-1{
+    font-size: 30px;
+  }
+
+  .tozali{
+  width: 100%;
+}
+
+.tozali-p{
+
+  width: 100%;
+
+}
+
+
+
+
+}

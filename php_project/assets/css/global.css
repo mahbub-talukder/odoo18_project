@@ -1,0 +1,291 @@
+body {
+  margin: 0;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.mobile-header {
+  display: block;  /* Changed from 'none' to 'block' */
+}
+
+.site-logo{
+  width: 100px;
+  height: 150px;
+}
+
+/* Header wrapper */
+.header-wrapper {
+  position: relative;
+  z-index: 1000;
+  color: #ffffff;
+  background-color: rgb(250, 249, 249);
+}
+
+/* Red bar styling */
+.red-bar {
+  position: fixed;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1200px;  /* reduced from 1300px */
+  background-color: rgb(8, 5, 177);
+  border-radius: 50px;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  gap: 0;
+  align-items: center;
+  z-index: 1;
+  box-shadow: 3px 9px 10px rgba(8, 5, 177, 0.6);
+  box-sizing: border-box;
+}
+
+.nav-left,
+.nav-right {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  width: 400px;  /* changed from min-width to fixed width */
+  justify-content: space-evenly;
+}
+
+.nav-link {
+  color: #ffffff;
+  font-size: 12px !important;
+  text-decoration: none;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+/* Floating logo */
+/*.floating-logo {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  background-color: white;
+  border-radius: 50%;
+  padding: 15px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.floating-logo img {
+  display: block;
+  border-radius: 50%;
+  width: 100px;
+  height: auto;
+  
+}*/
+
+.floating-logo {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  background-color: white;
+  border-radius: 50%;
+  padding: 30px;  /* reduced from 30px */
+  width: 160px;   /* reduced from 200px */
+  height: 160px;  /* reduced from 200px */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  overflow: hidden; /* crop image to circle */
+}
+
+.floating-logo img {
+  width: 100%;
+
+  object-fit: cover;
+  border-radius: 0; /* no need if parent clips it */
+}
+
+.line-something {
+        display: flex;
+        width: 100%;
+        height: 8px; /* You can adjust thickness */
+    }
+
+    .line-something > div {
+        flex: 1;
+    }
+
+    .line-blue {
+        background-color: #1109b4; /* Bootstrap blue */
+    }
+
+    .line-brown {
+        background-color: #8b0807; /* SaddleBrown */
+    }
+
+    .line-yellow {
+        background-color: #f5d917; /* Gold */
+    }
+
+
+/* Desktop hidden on mobile */
+@media (max-width: 1000px) {
+  .header-wrapper {
+    display: none;
+  }
+
+  .mobile-header {
+    background-color: #f8f8f8;
+    padding: 10px 15px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+
+  .mobile-top-bar {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(8, 5, 177);
+    padding: 10px 15px;
+    border-radius: 50px;
+    box-shadow: 0 6px 10px rgba(8, 5, 177, 0.5);
+    
+  }
+
+  .mobile-floating-logo {
+    
+    height: 50px;
+    background-color: white;
+    border-radius: 50%;
+    overflow: hidden;
+    
+    padding: 5px;
+  }
+
+  .mobile-floating-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hamburger {
+    font-size: 28px;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .mobile-menu {
+    display: none;
+    flex-direction: column;
+    background-color: rgb(8, 5, 177);
+    margin-top: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .mobile-menu.active {
+    display: flex;
+  }
+
+  .mobile-nav-link {
+    color: white;
+    padding: 15px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .mobile-nav-link:first-child {
+    border-top: none;
+  }
+
+  .mobile-nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Desktop view */
+@media (min-width: 1000px) {
+  .mobile-header {
+    display: none;
+  }
+  
+  .header-wrapper {
+    display: block;
+  }
+}
+
+/* Mobile view */
+@media (max-width: 1000px) {
+  .header-wrapper {
+    display: none;
+  }
+}
+
+footer{
+    border-top-left-radius: 65px;
+    border-top-right-radius: 65px;
+    background-color: #ffffff;
+    box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.footer-right-section{
+    max-width: 80%;
+}
+
+.footer-link-topic{
+    color: #0805b1;
+    margin-bottom: 80px;
+    margin-top: 40px;
+}
+
+.footer-link{
+    text-decoration: none;
+    color: gray;
+}
+
+.mini-paragraph{
+    font-family: 'Poppins', sans-serif;
+    color: #022452;
+}
+
+.footer-logo{
+    margin-bottom: 50px;
+}
+
+.logo-footer{
+    width: 100px;
+}
+
+
+/* Small laptops and tablets in landscape (992px and below) */
+@media (max-width: 992px) { /* styles */ }
+
+/* Tablets in portrait (768px and below) */
+@media (max-width: 768px) { /* styles */ 
+
+    .footer-link-topic{
+    
+    margin-bottom: 20px;
+    margin-top: 30px;
+}
+
+}
+
+/* Mobile devices (576px and below) */
+@media (max-width: 576px) { /* styles */
+
+  .footer-link-topic{
+    
+    margin-bottom: 20px;
+    margin-top: 30px;
+}
+  
+
+}

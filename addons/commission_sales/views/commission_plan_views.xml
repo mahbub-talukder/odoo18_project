@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_commission_plan_form" model="ir.ui.view">
+        <field name="name">commission.plan.form</field>
+        <field name="model">commission.plan</field>
+        <field name="arch" type="xml">
+            <form string="Commission Plan">
+                <header>
+                    <button name="action_approve" string="Approve" type="object" 
+                            invisible="state != 'draft'" class="btn-primary" 
+                            groups="commission_sales.group_commission_admin"/>
+                    <button name="action_cancel" string="Cancel" type="object" 
+                            invisible="state not in ('draft', 'approved')" groups="commission_sales.group_commission_admin"/>
+                    <button name="action_draft" string="Set to Draft" type="object" 
+                            invisible="state != 'cancelled'" groups="commission_sales.group_commission_admin"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved,cancelled"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="target_period_start"/>
+                            <field name="target_period_end"/>
+                            <field name="disbursement_frequency"/>
+                        </group>
+                        <group>
+                            <field name="first_order_commission" widget="percentage"/>
+                            <field name="residual_commission" widget="percentage"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Sales Persons">
+                            <field name="salesperson_ids" widget="many2many_tags"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <!-- List View -->
+    <record id="view_commission_plan_list" model="ir.ui.view">
+        <field name="name">commission.plan.list</field>
+        <field name="model">commission.plan</field>
+        <field name="arch" type="xml">
+            <list string="Commission Plans">
+                <field name="name"/>
+                <field name="target_period_start"/>
+                <field name="target_period_end"/>
+                <field name="disbursement_frequency"/>
+                <field name="first_order_commission" widget="percentage"/>
+                <field name="residual_commission" widget="percentage"/>
+                <field name="state" widget="badge" decoration-success="state == 'approved'" 
+                       decoration-warning="state == 'draft'" decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+</odoo>

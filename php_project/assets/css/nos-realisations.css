@@ -1,0 +1,61 @@
+.first-parent{
+    display: flex;
+  justify-content: center;
+  align-items: center;
+    min-height: 75vh;
+    width: 100%;
+    background: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), 
+              url('../img/worldback.png');
+                background-position: center center; /* Focus on the center */
+  background-repeat: no-repeat;
+}
+
+.topic-h{
+	font-size: 60px;
+	font-weight: 700;
+	color: #1109b4;
+	 font-family: 'League Spartan', sans-serif !important;
+}
+
+.centered-box {
+       /* Adjust height as needed */
+      
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 3rem;
+      
+      border-radius: 10px;
+    }
+	
+.card {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .card img {
+    width: 100%;
+    display: block;
+    border-radius: 8px;
+  }
+
+  .card-title {
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+    margin: 0;
+    color: white;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 1.2rem;
+  }
+  
+  .yt-responsive {
+    width: 90%;
+  }
+  
+  .yt-responsive iframe {
+    aspect-ratio: 16/9;
+  }
+  
