@@ -91,7 +91,7 @@ class WebsiteFormController(http.Controller):
 
                 # 5. Retrieve membership number (assuming 'id_number' exists)
                 try:
-                    membership_number = getattr(new_partner, 'id_number', None) or f"MEM-{new_partner.id:06d}"
+                    membership_number = getattr(new_partner, 'membership_number_auto', None) or f"MEM-{new_partner.id:06d}"
                 except Exception as e:
                     logger.error(f"Error getting membership number: {str(e)}")
                     membership_number = f"MEM-{new_partner.id:06d}"
