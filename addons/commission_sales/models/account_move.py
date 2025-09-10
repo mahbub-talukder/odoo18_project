@@ -1,5 +1,6 @@
 from odoo import models, fields, api
-
+import logging
+_logger = logging.getLogger(__name__)
 class AccountMove(models.Model):
     _inherit = 'account.move'
     
@@ -22,5 +23,53 @@ class AccountMove(models.Model):
                     
                     for commission in commission_records:
                         commission.invoice_id = move.id
+            
+            # Handle vendor bill payment for commission tracking
+            elif move.move_type == 'in_invoice' and move.payment_state == 'paid':
+                # Find commission tracking records linked to this vendor bill
+                commission_records = self.env['commission.tracking'].search([
+                    ('vendor_bill_id', '=', move.id),
+                    ('is_paid', '=', False)
+                ])
+                
+                for commission in commission_records:
+                    commission.is_paid = True
+        
+        return res
+    
+    def write(self, vals):
+        """Override write to handle payment state changes for vendor bills"""
+        res = super().write(vals)
+        _logger.info(f"res: {res}, vals: {vals}")
+
+        # find the move where vendor bill id is euq
+        # Check if payment_state is being updated
+
+        for move in self:
+            _logger.info(f"\n======debug move.state: {move.state},move.payment_state: {move.payment_state},move.move_type: {move.move_type},invoice_origin: {move.invoice_origin}\n")
+            
+
+
+
+            if move.move_type == 'in_invoice' and move.payment_state == 'paid':
+                
+                # Find commission tracking records linked to this vendor bill
+                commission_records = self.env['commission.tracking'].search([
+                    ('vendor_bill_id', '=', move.id),
+                    ('is_paid', '=', False)
+                ])
+                
+                for commission in commission_records:
+                    commission.is_paid = True
+                    
+            elif move.move_type == 'in_invoice' and move.payment_state in ['not_paid', 'partial']:
+                # Handle case when payment is reversed or partial
+                commission_records = self.env['commission.tracking'].search([
+                    ('vendor_bill_id', '=', move.id),
+                    ('is_paid', '=', True)
+                ])
+                
+                for commission in commission_records:
+                    commission.is_paid = False
         
         return res

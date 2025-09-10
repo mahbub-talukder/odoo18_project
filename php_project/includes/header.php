@@ -58,7 +58,7 @@ if (!isset($title)) {
         <a href="<?= BASE_URL ?>" class="nav-link"><b>ACCUEIL</b></a>
         <a href="<?= BASE_URL ?>about.php" class="nav-link"><b>QUI SOMMES -NOUS</b></a>
         <a href="<?= BASE_URL ?>authors.php" class="nav-link"><b>AUTORITÉ</b></a>
-        <a href="<?= BASE_URL ?>#" class="nav-link"><b>ACPIENS</b></a>
+        <a href="https://admin.acp.org.cd/" class="nav-link"><b>ACPIENS</b></a>
       </div>
       <div class="nav-right">
         <a href="<?= BASE_URL ?>deputies.php" class="nav-link"><b>STRUCTURES</b></a>

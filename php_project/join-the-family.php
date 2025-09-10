@@ -82,13 +82,13 @@ include 'includes/header.php';
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="x_studio_gender" id="genderMale" value="male" required>
                     <label class="form-check-label" for="genderMale">
-                      Male
+                      Homme
                     </label>
                   </div>
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="x_studio_gender" id="genderFemale" value="female" required>
                     <label class="form-check-label" for="genderFemale">
-                      Female
+                      Femme
                     </label>
                   </div>
                 </div>

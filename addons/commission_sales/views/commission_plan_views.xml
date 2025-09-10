@@ -14,21 +14,29 @@
                             invisible="state not in ('draft', 'approved')" groups="commission_sales.group_commission_admin"/>
                     <button name="action_draft" string="Set to Draft" type="object" 
                             invisible="state != 'cancelled'" groups="commission_sales.group_commission_admin"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,approved,cancelled"/>
+                            
+                    <field name="state" widget="statusbar"  decoration-success="state == 'approved'"
+                     decoration-warning="state == 'draft'" 
+                     decoration-danger="state == 'cancelled'"  
+                     invisible="state != 'cancelled'" statusbar_visible="draft,approved,cancelled"/>
+
+                    <field name="state" widget="statusbar" decoration-success="state == 'approved'"
+                     decoration-warning="state == 'draft'"  invisible="state == 'cancelled'" 
+                     statusbar_visible="draft,approved"/>
                 </header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="name"/>
-                            <field name="target_period_start"/>
-                            <field name="target_period_end"/>
-                            <field name="disbursement_frequency" help="If you select weekly, then bill will be generated on Monday, if you select biweekly, then bill will be generated on 1st and 15th of month, if you select monthly, then bill will be generated on 1st of month"/>
-                            <field name="salesperson_ids" widget="many2many_tags"/>
+                            <field name="name" readonly="state == 'approved' and commission_tracking_ids"/>
+                            <field name="target_period_start" readonly="state == 'approved' and commission_tracking_ids"/>
+                            <field name="target_period_end" readonly="state == 'approved' and commission_tracking_ids"/>
+                            <field name="disbursement_frequency" readonly="state == 'approved' and commission_tracking_ids" help="If you select weekly, then bill will be generated on Monday, if you select biweekly, then bill will be generated on 1st and 15th of month, if you select monthly, then bill will be generated on 1st of month"/>
+                            <field name="salesperson_ids" widget="many2many_tags" readonly="state == 'approved' and commission_tracking_ids"/>
                         </group>
                         <group>
-                            <field name="first_order_commission" />
-                            <field name="residual_commission" />
-                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="first_order_commission" readonly="state == 'approved' and commission_tracking_ids"/>
+                            <field name="residual_commission" readonly="state == 'approved' and commission_tracking_ids"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state == 'approved' and commission_tracking_ids"/>
                          
                             <!-- <field name="cron_run_date" widget="string" help="This field is used for testing purpose to run the cron job manually" color="red" /> -->
                         </group>

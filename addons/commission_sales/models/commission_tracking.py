@@ -23,14 +23,17 @@ class CommissionTracking(models.Model):
         ('residual', 'Residual')
     ], string='Commission Type', required=True)
     
-    commission_percentage = fields.Float(string='Commission %')
+    commission_percentage = fields.Float(string='Commission %',aggregator=False)
     commission_amount = fields.Monetary(string='Commission Amount', 
                                         currency_field='currency_id', compute='_compute_commission_amount', store=True)
     
     invoice_id = fields.Many2one('account.move', string='Customer Invoice')
-    invoice_payment_state = fields.Selection(related='invoice_id.payment_state', 
-                                             string='Invoice Payment Status', store=True)
-    
+    invoice_payment_state = fields.Selection(
+        related='invoice_id.payment_state',
+        string='Invoice Payment Status',
+        store=True,
+    )
+   
     vendor_bill_id = fields.Many2one('account.move', string='Vendor Bill')
     vendor_bill_state = fields.Selection(related='vendor_bill_id.state', 
                                          string='Vendor Bill Status')
@@ -41,11 +44,90 @@ class CommissionTracking(models.Model):
     currency_id = fields.Many2one('res.currency', string='Currency', 
                                    default=lambda self: self.env.company.currency_id)
     
+    # ------------------------------------------------------------------
+    # Smart button helpers
+    # ------------------------------------------------------------------
+    def _open_record_action(self, model, res_id):
+        """Return a simple ir.actions.act_window opening a specific record.
+
+        Using a minimal action avoids depending on external action XML ids and
+        works across installations.
+        """
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'View',
+            'res_model': model,
+            'view_mode': 'form',
+            'target': 'current',
+            'res_id': res_id,
+        }
+
+    def action_open_vendor_bill(self):
+        self.ensure_one()
+        if not self.vendor_bill_id:
+            return False
+        return self._open_record_action('account.move', self.vendor_bill_id.id)
+
+    def action_open_customer_invoice(self):
+        self.ensure_one()
+        if not self.invoice_id:
+            return False
+        return self._open_record_action('account.move', self.invoice_id.id)
+
+    def action_open_sale_order(self):
+        self.ensure_one()
+        if not self.sale_order_id:
+            return False
+        return self._open_record_action('sale.order', self.sale_order_id.id)
+
+    # @api.model
+    # def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+    #     """Augment grouped results with a consolidated invoice payment status.
+
+    #     We do NOT override the native aggregated value of invoice_payment_state
+    #     (which is a count). Instead, we populate a separate summary field that
+    #     the list view can display only for grouped rows.
+    #     """
+    #     res = super().read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
+
+    #     needs_summary = (
+    #         'invoice_payment_state_summary' in fields
+    #         or any(f.startswith('invoice_payment_state_summary') for f in fields)
+    #         or 'invoice_payment_state' in fields
+    #         or any(f.startswith('invoice_payment_state:') for f in fields)
+    #     )
+
+    #     if needs_summary:
+    #         for line in res:
+    #             group_domain = line.get('__domain')
+    #             if not group_domain:
+    #                 continue
+    #             records = self.search(group_domain)
+    #             states = set(records.mapped('invoice_payment_state'))
+
+    #             # Determine consolidated state: paid if all paid; partial if any partial; else not_paid
+    #             if states == {'paid'}:
+    #                 summary = 'paid'
+    #             elif 'partial' in states and 'paid' in states and len(states) == 2:
+    #                 summary = 'partial'
+    #             elif 'partial' in states:
+    #                 summary = 'partial'
+    #             else:
+    #                 summary = 'not_paid'
+
+    #             line['invoice_payment_state_summary'] = summary
+
+    #     return res
+    
+    def _compute_invoice_payment_state_summary(self):
+        for record in self:
+            record.invoice_payment_state_summary = 0
+
     @api.depends('order_amount', 'commission_percentage')
     def _compute_commission_amount(self):
         for record in self:
             record.commission_amount = (record.order_amount * record.commission_percentage) / 100
-            
+                     
     # Add method to check if customer is first-time buyer
     def _is_first_order(self, customer_id, salesperson_id):
         previous_orders = self.env['sale.order'].search_count([

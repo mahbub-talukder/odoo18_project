@@ -49,7 +49,7 @@ class CommissionPlan(models.Model):
                                   default=lambda self: self.env.company, required=True)
     # this field is used for testing purpose to run the cron job manually
     cron_run_date = fields.Date(string='Cron Run Date')
-    
+    commission_tracking_ids = fields.One2many('commission.tracking', 'commission_plan_id', string='Commission Tracking')
     # Add approval workflow actions
     def action_approve(self):
         self.ensure_one()
@@ -81,5 +81,5 @@ class CommissionPlan(models.Model):
     @api.constrains('state')
     def _check_commission_tracking(self):
         for rec in self:
-            if rec.state == 'approved' and rec.commission_tracking_ids:
-                raise models.ValidationError("This plan cannot be cancelled because at least one comission tracking is generated")
+            if rec.state == 'cancelled' and rec.commission_tracking_ids:
+                raise models.ValidationError("This plan cannot be cancelled because at least one comission is generated")

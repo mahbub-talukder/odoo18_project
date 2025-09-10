@@ -32,6 +32,7 @@ class SaleOrder(models.Model):
             
             # Check if first order
             is_first = self._is_customer_first_order(order.partner_id.id, order.user_id.id)
+            is_salesperson_first_order = self._is_salesperson_first_order(order.user_id.id)
             
             commission_vals = {
                 'sale_order_id': order.id,
@@ -47,6 +48,14 @@ class SaleOrder(models.Model):
     def _is_customer_first_order(self, partner_id, user_id):
         previous_orders = self.search_count([
             ('partner_id', '=', partner_id),
+            ('user_id', '=', user_id),
+            ('state', 'in', ['sale', 'done']),
+            ('id', '!=', self.id)
+        ])
+        return previous_orders == 0
+    
+    def _is_salesperson_first_order(self, user_id):
+        previous_orders = self.search_count([
             ('user_id', '=', user_id),
             ('state', 'in', ['sale', 'done']),
             ('id', '!=', self.id)
