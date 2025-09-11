@@ -10,16 +10,16 @@
                     <button name="action_approve" string="Approve" type="object" 
                             class="btn-primary"
                             invisible="state != 'draft'" 
-                            groups="commission_sales.group_commission_admin"/>
+                            groups="group_commission_sale_admin"/>
                     <button name="action_cancel" string="Cancel" type="object" 
                             class="btn-danger"
-                            invisible="state not in ('draft', 'approved')" groups="commission_sales.group_commission_admin"/>
+                            invisible="state not in ('draft', 'approved')" groups="group_commission_sale_admin"/>
                     <button name="action_draft" string="Set to Draft" type="object" 
                             class="btn-warning"
-                            invisible="state != 'cancelled'" groups="commission_sales.group_commission_admin"/>
+                            invisible="state != 'cancelled'" groups="group_commission_sale_admin"/>
                     <button name="action_closed" string="Set to Closed" type="object" 
                             class="btn-success"
-                            invisible="state != 'approved'" groups="commission_sales.group_commission_admin"/>
+                            invisible="state != 'approved'" groups="group_commission_sale_admin"/>
                             
                     <field name="state" widget="statusbar"  
                         decoration-warning="state == 'draft'" 
@@ -47,7 +47,8 @@
                             <field name="target_period_start" readonly="state in ('approved','closed') and commission_tracking_ids"/>
                             <field name="target_period_end" readonly="state in ('approved','closed') and commission_tracking_ids"/>
                             <field name="disbursement_frequency" readonly="state in ('approved','closed') and commission_tracking_ids" help="If you select weekly, then bill will be generated on Monday, if you select biweekly, then bill will be generated on 1st and 15th of month, if you select monthly, then bill will be generated on 1st of month"/>
-                            <field name="salesperson_ids" widget="many2many_tags" readonly="state in ('approved','closed') and commission_tracking_ids"/>
+                            <field name="salesperson_ids" widget="many2many_tags" 
+                                   readonly="state in ('approved','closed') and commission_tracking_ids"/>
                             <field name="company_id" groups="base.group_multi_company" readonly="state in ('approved','closed') and commission_tracking_ids"/>
                         </group>
                         <group string="Commission Rates">
@@ -93,6 +94,7 @@
                 <field name="target_period_start" widget="string"/>
                 <field name="target_period_end" widget="string"/>
                 <field name="disbursement_frequency" widget="selection"/>
+                <field name="salesperson_ids"/>
                 <field name="first_order_commission" widget="number"/>
                 <field name="residual_commission" widget="number"/>
                 <field name="state" widget="badge" 

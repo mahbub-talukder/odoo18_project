@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_commission_plan_admin,commission.plan.admin,model_commission_plan,group_commission_sale_admin,1,1,1,1
+access_commission_plan_user,commission.plan.user,model_commission_plan,group_commission_sale_user,1,0,0,0
+access_commission_tracking_admin,commission.tracking.admin,model_commission_tracking,group_commission_sale_admin,1,1,1,1
+access_commission_tracking_user,commission.tracking.user,model_commission_tracking,group_commission_sale_user,1,0,0,0

@@ -20,6 +20,24 @@ class CommissionPlan(models.Model):
         required=True,
         tracking=True
     )
+    
+    def read(self, fields=None, load='_classic_read'):
+        """Override read to filter salesperson_ids for non-admin users"""
+        result = super().read(fields, load)
+        
+        # Only filter if not admin and salesperson_ids is in the requested fields
+        if not self.env.user.has_group('ox_comission_sales.group_commission_sale_admin'):
+            for record in result:
+                if isinstance(record, dict) and 'salesperson_ids' in record:
+                    # Filter salesperson_ids to only show current user if they're in the list
+                    if record['salesperson_ids']:
+                        current_user_id = self.env.user.id
+                        if current_user_id in record['salesperson_ids']:
+                            record['salesperson_ids'] = [current_user_id]
+                        else:
+                            record['salesperson_ids'] = []
+        
+        return result
     disbursement_frequency = fields.Selection([
         ('weekly', 'Weekly'),
         ('biweekly', 'Biweekly'),
@@ -54,14 +72,14 @@ class CommissionPlan(models.Model):
     # Add approval workflow actions
     def action_approve(self):
         self.ensure_one()
-        if not self.env.user.has_group('commission_sales.group_commission_admin'):
+        if not self.env.user.has_group('ox_comission_sales.group_commission_sale_admin'):
             raise UserError("Only administrators can approve commission plans")
         self.state = 'approved'
     
     def action_view_commissions(self):
         """Open commissions linked to this plan in a dedicated view."""
         self.ensure_one()
-        action = self.env.ref('commission_sales.action_all_commission').read()[0]
+        action = self.env.ref('ox_comission_sales.action_all_commission').read()[0]
         action['domain'] = [('commission_plan_id', '=', self.id)]
         # Keep a helpful default grouping
         ctx = dict(self.env.context or {})
@@ -82,8 +100,8 @@ class CommissionPlan(models.Model):
     @api.onchange('salesperson_ids')
     def _onchange_salesperson_ids(self):
         """Restrict user selection for non-admins"""
-        if not self.env.user.has_group('commission_sales.group_commission_admin'):
-            # Regular users can only select themselves
+        if not self.env.user.has_group('ox_comission_sales.group_commission_sale_admin'):
+            # Commission sale users can only select themselves
             allowed_users = self.env.user
             if self.salesperson_ids:
                 invalid_users = self.salesperson_ids - allowed_users
