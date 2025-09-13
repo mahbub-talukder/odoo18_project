@@ -35,12 +35,12 @@
             <field name="arch" type="xml">
                 <form string="Commission Plan">
                     <header>
-                        <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="state != 'draft'" groups="ox_sales_commission.group_sales_commission_admin"/>
-                        <button name="action_done" type="object" string="Mark as Done" class="btn-primary" invisible="state != 'approved'" groups="ox_sales_commission.group_sales_commission_admin"/>
-                        <button name="action_cancel" type="object" string="Cancel" invisible="state in ['done', 'cancel']" groups="ox_sales_commission.group_sales_commission_admin"/>
-                        <button name="action_draft" type="object" string="Reset to Draft" invisible="state != 'cancel'" groups="ox_sales_commission.group_sales_commission_admin"/>
+                        <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="state != 'draft'" groups="av_sales_commission.group_sales_commission_admin"/>
+                        <button name="action_done" type="object" string="Mark as Done" class="btn-primary" invisible="state != 'approved'" groups="av_sales_commission.group_sales_commission_admin"/>
+                        <button name="action_cancel" type="object" string="Cancel" invisible="state in ['done', 'cancel']" groups="av_sales_commission.group_sales_commission_admin"/>
+                        <button name="action_draft" type="object" string="Reset to Draft" invisible="state != 'cancel'" groups="av_sales_commission.group_sales_commission_admin"/>
                         <!-- <button name="action_generate_commission_reports" type="object" string="Generate Commissions" 
-                                class="btn-secondary" invisible="state not in ['approved']" groups="ox_sales_commission.group_sales_commission_admin"/> -->
+                                class="btn-secondary" invisible="state not in ['approved']" groups="av_sales_commission.group_sales_commission_admin"/> -->
                         <!-- <button name="action_create_test_commission_slabs" type="object" string="Create Test Slabs" 
                                 class="btn-secondary" invisible="state != 'draft'" groups="base.group_system"/> -->
                         <field name="state" widget="statusbar" statusbar_visible="draft,approved,done" invisible="state == 'cancel'"/>

@@ -3,12 +3,12 @@
     <data noupdate="1">
         <!-- Assign Sales Commission User group to Sales User -->
         <record id="sales_team.group_sale_salesman" model="res.groups">
-            <field name="implied_ids" eval="[(4, ref('ox_sales_commission.group_sales_commission_user'))]"/>
+            <field name="implied_ids" eval="[(4, ref('av_sales_commission.group_sales_commission_user'))]"/>
         </record>
 
         <!-- Assign Sales Commission Admin group to Sales Manager -->
         <record id="sales_team.group_sale_manager" model="res.groups">
-            <field name="implied_ids" eval="[(4, ref('ox_sales_commission.group_sales_commission_admin'))]"/>
+            <field name="implied_ids" eval="[(4, ref('av_sales_commission.group_sales_commission_admin'))]"/>
         </record>
     </data>
 </odoo> 

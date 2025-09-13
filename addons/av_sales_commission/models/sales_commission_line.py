@@ -188,7 +188,7 @@ class SalesCommissionLine(models.Model):
             'name': 'Commission Slabs',
             'res_model': 'sales.commission.line',
             'view_mode': 'list',
-            'view_id': self.env.ref('ox_sales_commission.sales_commission_line_tree_view').id,
+            'view_id': self.env.ref('av_sales_commission.sales_commission_line_tree_view').id,
             'target': 'new',
             'domain': [('target_id', '=', target_id)],
             'context': {

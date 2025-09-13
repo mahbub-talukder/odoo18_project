@@ -7,7 +7,7 @@
         <!--Auto cron job for process product data queue and it runs every 5 min.-->
         <record id="cron_generate_commission_vendor_bills" model="ir.cron">
             <field name="name">Generate Commission Vendor Bills</field>
-            <field name="model_id" ref="ox_sales_commission.model_sales_commission_target"/>
+            <field name="model_id" ref="av_sales_commission.model_sales_commission_target"/>
             <field name="state">code</field>
             <field eval="False" name="active"/>
             <field name="code">model.cron_generate_vendor_bills()</field>

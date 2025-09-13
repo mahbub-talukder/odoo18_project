@@ -58,7 +58,7 @@ class SalesCommission(models.Model):
     @api.onchange('salesperson_ids')
     def _onchange_salesperson_ids(self):
         """Restrict user selection for non-admins"""
-        if not self.env.user.has_group('ox_sales_commission.group_sales_commission_admin'):
+        if not self.env.user.has_group('av_sales_commission.group_sales_commission_admin'):
             # Regular users can only select themselves
             allowed_users = self.env.user
             if self.salesperson_ids:
@@ -109,28 +109,28 @@ class SalesCommission(models.Model):
     # Workflow actions
     def action_approve(self):
         """Approve commission plan - Only administrators can approve"""
-        if not self.env.user.has_group('ox_sales_commission.group_sales_commission_admin'):
+        if not self.env.user.has_group('av_sales_commission.group_sales_commission_admin'):
             from odoo.exceptions import AccessError
             raise AccessError("Only Commission Administrators can approve commission plans.")
         self.write({'state': 'approved'})
 
     def action_done(self):
         """Mark commission plan as done - Only administrators can mark as done"""
-        if not self.env.user.has_group('ox_sales_commission.group_sales_commission_admin'):
+        if not self.env.user.has_group('av_sales_commission.group_sales_commission_admin'):
             from odoo.exceptions import AccessError
             raise AccessError("Only Commission Administrators can mark commission plans as done.")
         self.write({'state': 'done'})
 
     def action_cancel(self):
         """Cancel commission plan - Only administrators can cancel"""
-        if not self.env.user.has_group('ox_sales_commission.group_sales_commission_admin'):
+        if not self.env.user.has_group('av_sales_commission.group_sales_commission_admin'):
             from odoo.exceptions import AccessError
             raise AccessError("Only Commission Administrators can cancel commission plans.")
         self.write({'state': 'cancel'})
 
     def action_draft(self):
         """Reset commission plan to draft - Only administrators can reset to draft"""
-        if not self.env.user.has_group('ox_sales_commission.group_sales_commission_admin'):
+        if not self.env.user.has_group('av_sales_commission.group_sales_commission_admin'):
             from odoo.exceptions import AccessError
             raise AccessError("Only Commission Administrators can reset commission plans to draft.")
         self.write({'state': 'draft'})

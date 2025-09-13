@@ -1,18 +1,75 @@
-from odoo import fields, models
-
+from odoo import models, fields, api
+import logging
+_logger = logging.getLogger(__name__)
 class AccountMove(models.Model):
     _inherit = 'account.move'
-
-    commission_plan_id = fields.Many2one('sales.commission', string="Commission Plan", readonly=True)
-    report_id = fields.One2many('sales.commission.report', 'bill_id', string="Commission Report", readonly=True)
     
-    def action_view_commission_plan(self):
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Commission Plan',
-            'res_model': 'sales.commission',
-            'res_id': self.commission_plan_id.id,
-            'view_mode': 'form',
-            'target': 'current',
-        } 
+    def _post(self, soft=True):
+        """Override to link invoices to commission tracking when posted"""
+        res = super()._post(soft=soft)
+        
+        for move in self:
+            if move.move_type == 'out_invoice' and move.invoice_origin:
+                # Find commission tracking records for this sale order
+                sale_order = self.env['sale.order'].search([
+                    ('name', '=', move.invoice_origin)
+                ], limit=1)
+                
+                if sale_order:
+                    commission_records = self.env['commission.tracking'].search([
+                        ('sale_order_id', '=', sale_order.id),
+                        ('invoice_id', '=', False)
+                    ])
+                    
+                    for commission in commission_records:
+                        commission.invoice_id = move.id
+            
+            # Handle vendor bill payment for commission tracking
+            elif move.move_type == 'in_invoice' and move.payment_state == 'paid':
+                # Find commission tracking records linked to this vendor bill
+                commission_records = self.env['commission.tracking'].search([
+                    ('vendor_bill_id', '=', move.id),
+                    ('is_paid', '=', False)
+                ])
+                
+                for commission in commission_records:
+                    commission.is_paid = True
+        
+        return res
+    
+    def write(self, vals):
+        """Override write to handle payment state changes for vendor bills"""
+        res = super().write(vals)
+        _logger.info(f"res: {res}, vals: {vals}")
+
+        # find the move where vendor bill id is euq
+        # Check if payment_state is being updated
+
+        for move in self:
+            _logger.info(f"\n======debug move.state: {move.state},move.payment_state: {move.payment_state},move.move_type: {move.move_type},invoice_origin: {move.invoice_origin}\n")
+            
+
+
+
+            if move.move_type == 'in_invoice' and move.payment_state == 'paid':
+                
+                # Find commission tracking records linked to this vendor bill
+                commission_records = self.env['commission.tracking'].search([
+                    ('vendor_bill_id', '=', move.id),
+                    ('is_paid', '=', False)
+                ])
+                
+                for commission in commission_records:
+                    commission.is_paid = True
+                    
+            elif move.move_type == 'in_invoice' and move.payment_state in ['not_paid', 'partial']:
+                # Handle case when payment is reversed or partial
+                commission_records = self.env['commission.tracking'].search([
+                    ('vendor_bill_id', '=', move.id),
+                    ('is_paid', '=', True)
+                ])
+                
+                for commission in commission_records:
+                    commission.is_paid = False
+        
+        return res

@@ -10,7 +10,7 @@
         <!-- Sales Commission Administrator (For future use) -->
         <record id="group_sales_commission_admin" model="res.groups">
             <field name="name">Sales Commission Administrator</field>
-            <field name="implied_ids" eval="[(4, ref('ox_sales_commission.group_sales_commission_user'))]"/>
+            <field name="implied_ids" eval="[(4, ref('av_sales_commission.group_sales_commission_user'))]"/>
         </record>
     </data>
 </odoo> 

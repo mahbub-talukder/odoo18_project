@@ -1,33 +1,32 @@
-# -*- coding: utf-8 -*-
 {
-    'name': 'Sales Commission Management/Plans',
-    'title': 'Sales Commission Management/Plans',
-    'version': '18.0.1.1',
+    'name': 'OX Commission Sales',
+    'version': '18.0.1.0.0',
     'category': 'Sales',
-    'summary': 'Custom commission plans for salespersons or sales teams',
-    'author': 'OutsetX',
-    'license': 'LGPL-3',
-    'depends': ['sale_management', 'sales_team', 'hr', 'account'],
+    'summary': 'Manage sales commissions with automated tracking and vendor bills',
+    'description': """
+        Commission Sales Management System
+        ===================================
+        - 20% commission on first orders
+        - 10% residual commission on repeat orders
+        - Biweekly automated payouts
+        - Commission plan management with approval workflow
+        - Real-time commission tracking
+        - Automated vendor bill generation
+    """,
+    'author': 'Your Company',
+    'website': 'https://www.yourcompany.com',
+    'depends': ['sale_management', 'account', 'mail'],
     'data': [
-        'security/sales_commission_security.xml',
+        'security/commission_security.xml',
         'security/ir.model.access.csv',
-        'security/sales_commission_rules.xml',
-        'data/default_groups.xml',
-        'views/sales_commission_views.xml',
-        'views/sales_commission_line_views.xml',
-        'views/sales_commission_report_views.xml',
-        'views/sales_commission_realtime_views.xml',
-        'views/sales_commission_realtime_detail_views.xml',
-        'views/actions_and_crons.xml',
-        'views/menuitems.xml',
-        'views/account_move_views.xml',
+        'views/commission_plan_views.xml',
+        'views/commission_tracking_views.xml',
+        'views/menu_views.xml',
+        'data/ir_cron_data.xml',
     ],
-    'assets': {
-        'web.assets_backend': [
-            'ox_sales_commission/static/src/css/sales_commission.css',
-        ],
-    },
     'installable': True,
     'application': True,
     'auto_install': False,
+    'license': 'LGPL-3',
+    'icon': '/ox_sales_commission/static/description/icon.png',
 }
