@@ -6,7 +6,7 @@
         <field name="model">commission.plan</field>
         <field name="arch" type="xml">
             <form string="Commission Plan">
-                <header>
+                <!-- <header>
                     <button name="action_approve" string="Approve" type="object" 
                             class="btn-primary"
                             invisible="state != 'draft'" 
@@ -35,7 +35,7 @@
                         decoration-success="state == 'closed'"  
                         invisible="state == 'cancelled'" 
                         statusbar_visible="draft,approved,closed"/>
-                </header>
+                </header> -->
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button type="object" name="action_view_commissions" class="oe_stat_button" icon="fa-line-chart"

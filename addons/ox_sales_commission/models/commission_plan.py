@@ -62,7 +62,7 @@ class CommissionPlan(models.Model):
         ('approved', 'Approved'),
         ('closed', 'Closed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
+    ], string='Status', default='approved', tracking=True)
     
     company_id = fields.Many2one('res.company', string='Company', 
                                   default=lambda self: self.env.company, required=True)
