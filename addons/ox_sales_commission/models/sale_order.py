@@ -43,7 +43,9 @@ class SaleOrder(models.Model):
                 'commission_percentage': commission_plan.first_order_commission if is_first else commission_plan.residual_commission,
             }
             
-            self.env['commission.tracking'].create(commission_vals)
+            # Create commission tracking with elevated rights to avoid access errors
+            # for regular sales users during confirmation.
+            self.env['commission.tracking'].sudo().create(commission_vals)
     
     def _is_customer_first_order(self, partner_id, user_id):
         previous_orders = self.search_count([
