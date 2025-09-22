@@ -1,0 +1,15 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_sales_commission_user","sales.commission.user","model_sales_commission","av_sales_commission.group_sales_commission_user",1,0,0,0
+"access_sales_commission_admin","sales.commission.admin","model_sales_commission","av_sales_commission.group_sales_commission_admin",1,1,1,1
+"access_sales_commission_line_user","sales.commission.line.user","model_sales_commission_line","av_sales_commission.group_sales_commission_user",1,0,0,0
+"access_sales_commission_line_admin","sales.commission.line.admin","model_sales_commission_line","av_sales_commission.group_sales_commission_admin",1,1,1,1
+"access_sales_commission_target_user","sales.commission.target.user","model_sales_commission_target","av_sales_commission.group_sales_commission_user",1,0,0,0
+"access_sales_commission_target_admin","sales.commission.target.admin","model_sales_commission_target","av_sales_commission.group_sales_commission_admin",1,1,1,1
+"access_sales_commission_report_user","sales.commission.report.user","model_sales_commission_report","av_sales_commission.group_sales_commission_user",1,0,0,0
+"access_sales_commission_report_admin","sales.commission.report.admin","model_sales_commission_report","av_sales_commission.group_sales_commission_admin",1,1,1,1
+"access_sales_commission_report_line_user","sales.commission.report.line.user","model_sales_commission_report_line","av_sales_commission.group_sales_commission_user",1,0,0,0
+"access_sales_commission_report_line_admin","sales.commission.report.line.admin","model_sales_commission_report_line","av_sales_commission.group_sales_commission_admin",1,1,1,1
+"access_sales_commission_realtime_report_user","sales.commission.realtime.report.user","model_sales_commission_realtime_report","av_sales_commission.group_sales_commission_user",1,0,0,0
+"access_sales_commission_realtime_report_admin","sales.commission.realtime.report.admin","model_sales_commission_realtime_report","av_sales_commission.group_sales_commission_admin",1,0,0,0
+"access_sales_commission_realtime_report_detail_user","sales.commission.realtime.report.detail.user","model_sales_commission_realtime_report_detail","av_sales_commission.group_sales_commission_user",1,0,0,0
+"access_sales_commission_realtime_report_detail_admin","sales.commission.realtime.report.detail.admin","model_sales_commission_realtime_report_detail","av_sales_commission.group_sales_commission_admin",1,0,0,0
