@@ -6,8 +6,11 @@
         <field name="model">commission.tracking</field>
         <field name="arch" type="xml">
             <list string="Commission Tracking" create="false" edit="false">
+               
+                <field name="display_date" string="Date"/>
                 <field name="salesperson_id"/>
-                <field name="sale_order_id"/>
+                <!-- <field name="sale_order_id"/> -->
+                <field name="invoice_id"/>
                 <field name="customer_id"/>
                 <field name="commission_type"/>
                 <field name="order_amount" widget="monetary" sum="Total Order Amount"/>
@@ -103,6 +106,7 @@
                 <field name="salesperson_id"/>
                 <field name="customer_id"/>
                 <field name="sale_order_id"/>
+                <field name="invoice_id"/>
          
                 <field name="currency_id" invisible="1"/>
                 <filter string="Invoice Paid" name="invoice_paid" 

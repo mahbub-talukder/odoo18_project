@@ -1,6 +1,6 @@
 from odoo import models, fields, api
 from datetime import datetime, timedelta
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 class CommissionPlan(models.Model):
     _name = 'commission.plan'
@@ -62,7 +62,7 @@ class CommissionPlan(models.Model):
         ('approved', 'Approved'),
         ('closed', 'Closed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='approved', tracking=True)
+    ], string='Status', default='draft', tracking=True)
     
     company_id = fields.Many2one('res.company', string='Company', 
                                   default=lambda self: self.env.company, required=True)
@@ -113,18 +113,34 @@ class CommissionPlan(models.Model):
                             'message': 'You can only assign commission plans to yourself. Other users have been removed from the selection.'
                         }
                     }
-    # do set validation if the paln is approved and at least one comission tracking is generated, this plan cannot be cancelled
+                
     @api.constrains('target_period_start', 'target_period_end')
     def _check_overlapping_periods(self):
         for rec in self:
+            # Skip if dates or salespersons are not set yet
+            if not rec.target_period_start or not rec.target_period_end or not rec.salesperson_ids:
+                continue
+
+            # Disallow ANY overlap (partial or full). Adjacent dates (end == start) are also considered overlap.
             overlapping_plans = self.search([
                 ('id', '!=', rec.id),
                 ('state', '=', 'approved'),
+                ('company_id', '=', rec.company_id.id),
                 ('target_period_start', '<=', rec.target_period_end),
-                ('target_period_end', '>=', rec.target_period_start)
+                ('target_period_end', '>=', rec.target_period_start),
+                ('salesperson_ids', 'in', rec.salesperson_ids.ids),
             ])
+
             if overlapping_plans:
-                raise models.ValidationError("A new plan cannot be generated due to overlapping target periods with existing approved plans.")
+                conflicting_users = (overlapping_plans.mapped('salesperson_ids') & rec.salesperson_ids).mapped('name')
+                plan_names = ", ".join(overlapping_plans.mapped('name'))
+                user_names = ", ".join(conflicting_users)
+                raise ValidationError(
+                    (
+                        "Overlapping commission plan(s) found for: %s. "
+                        "Existing plan(s): %s. Dates must not overlap for the same salesperson(s)."
+                    ) % (user_names or 'selected users', plan_names or 'N/A')
+                )
 
     @api.constrains('state')
     def _check_commission_tracking(self):

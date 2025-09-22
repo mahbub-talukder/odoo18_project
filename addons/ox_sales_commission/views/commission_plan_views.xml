@@ -6,20 +6,21 @@
         <field name="model">commission.plan</field>
         <field name="arch" type="xml">
             <form string="Commission Plan">
-                <!-- <header>
+                <header>
                     <button name="action_approve" string="Approve" type="object" 
                             class="btn-primary"
                             invisible="state != 'draft'" 
-                            groups="group_commission_sale_admin"/>
+                            groups="ox_sales_commission.group_commission_sale_admin"/>
                     <button name="action_cancel" string="Cancel" type="object" 
                             class="btn-danger"
-                            invisible="state not in ('draft', 'approved')" groups="group_commission_sale_admin"/>
+                            invisible="state not in ('draft', 'approved')" groups="ox_sales_commission.group_commission_sale_admin"/>
                     <button name="action_draft" string="Set to Draft" type="object" 
                             class="btn-warning"
-                            invisible="state != 'cancelled'" groups="group_commission_sale_admin"/>
+                            invisible="state != 'cancelled'" groups="ox_sales_commission.group_commission_sale_admin"/>
                     <button name="action_closed" string="Set to Closed" type="object" 
                             class="btn-success"
-                            invisible="state != 'approved'" groups="group_commission_sale_admin"/>
+                            invisible="state != 'approved'" 
+                            groups="ox_sales_commission.group_commission_sale_admin"/>
                             
                     <field name="state" widget="statusbar"  
                         decoration-warning="state == 'draft'" 
@@ -35,7 +36,7 @@
                         decoration-success="state == 'closed'"  
                         invisible="state == 'cancelled'" 
                         statusbar_visible="draft,approved,closed"/>
-                </header> -->
+                </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button type="object" name="action_view_commissions" class="oe_stat_button" icon="fa-line-chart"

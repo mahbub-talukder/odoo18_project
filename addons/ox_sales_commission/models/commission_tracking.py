@@ -33,6 +33,8 @@ class CommissionTracking(models.Model):
         string='Invoice Payment Status',
         store=True,
     )
+    invoice_paid_date = fields.Date(string='Invoice Paid Date')
+    display_date = fields.Date(string='Date', compute='_compute_display_date', store=True)
    
     vendor_bill_id = fields.Many2one('account.move', string='Vendor Bill')
     vendor_bill_state = fields.Selection(related='vendor_bill_id.state', 
@@ -127,6 +129,22 @@ class CommissionTracking(models.Model):
     def _compute_commission_amount(self):
         for record in self:
             record.commission_amount = (record.order_amount * record.commission_percentage) / 100
+    
+    @api.depends('invoice_paid_date', 'invoice_id', 'invoice_id.invoice_date', 'sale_order_id', 'sale_order_id.date_order')
+    def _compute_display_date(self):
+        for record in self:
+            if record.invoice_paid_date:
+                record.display_date = record.invoice_paid_date
+            elif record.invoice_id and record.invoice_id.invoice_date:
+                record.display_date = record.invoice_id.invoice_date
+            elif record.sale_order_id and record.sale_order_id.date_order:
+                # Convert datetime to date
+                try:
+                    record.display_date = record.sale_order_id.date_order.date()
+                except Exception:
+                    record.display_date = False
+            else:
+                record.display_date = False
                      
     # Add method to check if customer is first-time buyer
     def _is_first_order(self, customer_id, salesperson_id):

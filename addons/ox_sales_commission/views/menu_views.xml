@@ -33,7 +33,7 @@
               parent="menu_commission_root"
               action="action_my_commission"
               sequence="20"
-              groups="group_commission_sale_user"/>
+              groups="ox_sales_commission.group_commission_sale_user"/>
     
     <!-- Commission Menu (Admin Only) -->
     <record id="action_all_commission" model="ir.actions.act_window">
@@ -48,7 +48,7 @@
               parent="menu_commission_root"
               action="action_all_commission"
               sequence="25"
-              groups="group_commission_sale_admin"/>
+              groups="ox_sales_commission.group_commission_sale_admin"/>
     
    
     
@@ -57,5 +57,5 @@
               name="Configuration" 
               parent="menu_commission_root"
               sequence="100"
-              groups="group_commission_sale_admin"/>
+              groups="ox_sales_commission.group_commission_sale_admin"/>
 </odoo>

@@ -38,7 +38,7 @@ class AccountMove(models.Model):
         return res
     
     def write(self, vals):
-        """Override write to handle payment state changes for vendor bills"""
+        """Override write to handle payment state changes for vendor bills and customer invoices"""
         res = super().write(vals)
         _logger.info(f"res: {res}, vals: {vals}")
 
@@ -71,5 +71,21 @@ class AccountMove(models.Model):
                 
                 for commission in commission_records:
                     commission.sudo().is_paid = False
+
+            # Track invoice paid date for customer invoices
+            if move.move_type == 'out_invoice' and 'payment_state' in vals:
+                if move.payment_state == 'paid':
+                    commission_records = self.env['commission.tracking'].sudo().search([
+                        ('invoice_id', '=', move.id)
+                    ])
+                    for commission in commission_records:
+                        if not commission.invoice_paid_date:
+                            commission.invoice_paid_date = fields.Date.context_today(self)
+                elif move.payment_state in ['not_paid', 'partial']:
+                    commission_records = self.env['commission.tracking'].sudo().search([
+                        ('invoice_id', '=', move.id)
+                    ])
+                    for commission in commission_records:
+                        commission.invoice_paid_date = False
         
         return res
