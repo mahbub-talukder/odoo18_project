@@ -13,8 +13,8 @@
         - Real-time commission tracking
         - Automated vendor bill generation
     """,
-    'author': 'Your Company',
-    'website': 'https://www.yourcompany.com',
+    'author': 'Mahbub Talukder',
+    'website': 'https://www.nexelbd.com',
     'depends': ['sale_management', 'account', 'mail'],
     'data': [
         'security/commission_security.xml',
