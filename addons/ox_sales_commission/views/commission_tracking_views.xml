@@ -112,15 +112,18 @@
                 <filter string="Invoice Paid" name="invoice_paid" 
                         domain="[('invoice_payment_state', '=', 'paid')]"/>
                 <separator/>
+                <filter string="Admin Commission" name="admin_commission" 
+                        domain="[('commission_type', '=', 'admin')]"/>
                 <filter string="First Order" name="first_order" 
                         domain="[('commission_type', '=', 'first_order')]"/>
                 <filter string="Residual" name="residual" 
                         domain="[('commission_type', '=', 'residual')]"/>
+                <separator/>
                 <filter string="Paid" name="paid" domain="[('is_paid', '=', True)]"/>
                 <filter string="Unpaid" name="unpaid" domain="[('is_paid', '=', False)]"/>
                 
                 <group expand="0" string="Group By">
-                    <filter string="Salesperson" name="group_salesperson" 
+                    <filter string="Commission User" name="group_salesperson" 
                             context="{'group_by': 'salesperson_id'}"/>
                     <filter string="Disbursement Frequency" name="group_frequency" 
                             context="{'group_by': 'disbursement_frequency'}"/>

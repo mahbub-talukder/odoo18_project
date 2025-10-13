@@ -7,9 +7,15 @@ class CommissionPlan(models.Model):
     _description = 'Sales Commission Plan'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     
+    commission_plan_type = fields.Selection([
+        ('sales_team', 'Sales Team'),
+        ('admin', 'Admin')
+    ], string='Commission Plan Type', required=True, default='sales_team', tracking=True)
+    
     name = fields.Char(string='Plan Name', required=True, tracking=True)
     target_period_start = fields.Date(string='Target Period Start', required=True, tracking=True)
     target_period_end = fields.Date(string='Target Period End', required=True, tracking=True)
+    
     salesperson_ids = fields.Many2many(
         'res.users',
         'commission_plan_salesperson_rel',
@@ -17,7 +23,13 @@ class CommissionPlan(models.Model):
         'user_id',
         string='Sales Persons',
         domain=[('share', '=', False)],
-        required=True,
+        tracking=True
+    )
+    
+    admin_person_id = fields.Many2one(
+        'res.users', 
+        string='Admin Person', 
+        domain=[('share', '=', False)],
         tracking=True
     )
     
@@ -114,33 +126,65 @@ class CommissionPlan(models.Model):
                         }
                     }
                 
+    @api.constrains('commission_plan_type', 'salesperson_ids', 'admin_person_id')
+    def _check_required_fields(self):
+        """Validate required fields based on commission plan type"""
+        for rec in self:
+            if rec.commission_plan_type == 'sales_team' and not rec.salesperson_ids:
+                raise ValidationError("Sales Persons field is required when Commission Plan Type is 'Sales Team'.")
+            if rec.commission_plan_type == 'admin' and not rec.admin_person_id:
+                raise ValidationError("Admin Person field is required when Commission Plan Type is 'Admin'.")
+    
     @api.constrains('target_period_start', 'target_period_end')
     def _check_overlapping_periods(self):
         for rec in self:
-            # Skip if dates or salespersons are not set yet
-            if not rec.target_period_start or not rec.target_period_end or not rec.salesperson_ids:
+            # Skip if dates are not set yet
+            if not rec.target_period_start or not rec.target_period_end:
                 continue
+            
+            # For Sales Team type, check salespersons overlap
+            if rec.commission_plan_type == 'sales_team' and rec.salesperson_ids:
+                # Disallow ANY overlap (partial or full). Adjacent dates (end == start) are also considered overlap.
+                overlapping_plans = self.search([
+                    ('id', '!=', rec.id),
+                    ('state', '=', 'approved'),
+                    ('company_id', '=', rec.company_id.id),
+                    ('commission_plan_type', '=', 'sales_team'),
+                    ('target_period_start', '<=', rec.target_period_end),
+                    ('target_period_end', '>=', rec.target_period_start),
+                    ('salesperson_ids', 'in', rec.salesperson_ids.ids),
+                ])
 
-            # Disallow ANY overlap (partial or full). Adjacent dates (end == start) are also considered overlap.
-            overlapping_plans = self.search([
-                ('id', '!=', rec.id),
-                ('state', '=', 'approved'),
-                ('company_id', '=', rec.company_id.id),
-                ('target_period_start', '<=', rec.target_period_end),
-                ('target_period_end', '>=', rec.target_period_start),
-                ('salesperson_ids', 'in', rec.salesperson_ids.ids),
-            ])
-
-            if overlapping_plans:
-                conflicting_users = (overlapping_plans.mapped('salesperson_ids') & rec.salesperson_ids).mapped('name')
-                plan_names = ", ".join(overlapping_plans.mapped('name'))
-                user_names = ", ".join(conflicting_users)
-                raise ValidationError(
-                    (
-                        "Overlapping commission plan(s) found for: %s. "
-                        "Existing plan(s): %s. Dates must not overlap for the same salesperson(s)."
-                    ) % (user_names or 'selected users', plan_names or 'N/A')
-                )
+                if overlapping_plans:
+                    conflicting_users = (overlapping_plans.mapped('salesperson_ids') & rec.salesperson_ids).mapped('name')
+                    plan_names = ", ".join(overlapping_plans.mapped('name'))
+                    user_names = ", ".join(conflicting_users)
+                    raise ValidationError(
+                        (
+                            "Overlapping commission plan(s) found for: %s. "
+                            "Existing plan(s): %s. Dates must not overlap for the same salesperson(s)."
+                        ) % (user_names or 'selected users', plan_names or 'N/A')
+                    )
+            
+            # For Admin type, only one active admin plan should exist per period
+            if rec.commission_plan_type == 'admin':
+                overlapping_admin_plans = self.search([
+                    ('id', '!=', rec.id),
+                    ('state', '=', 'approved'),
+                    ('company_id', '=', rec.company_id.id),
+                    ('commission_plan_type', '=', 'admin'),
+                    ('target_period_start', '<=', rec.target_period_end),
+                    ('target_period_end', '>=', rec.target_period_start),
+                ])
+                
+                if overlapping_admin_plans:
+                    plan_names = ", ".join(overlapping_admin_plans.mapped('name'))
+                    raise ValidationError(
+                        (
+                            "Only one active Admin commission plan can exist per period. "
+                            "Conflicting plan(s): %s"
+                        ) % (plan_names or 'N/A')
+                    )
 
     @api.constrains('state')
     def _check_commission_tracking(self):

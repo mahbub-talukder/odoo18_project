@@ -44,17 +44,20 @@
                     </div>
                     <group>
                         <group string="Period and Participants">
+                            <field name="commission_plan_type" readonly="state in ('approved','closed') and commission_tracking_ids"/>
                             <field name="name" readonly="state in ('approved','closed') and commission_tracking_ids"/>
                             <field name="target_period_start" readonly="state in ('approved','closed') and commission_tracking_ids"/>
                             <field name="target_period_end" readonly="state in ('approved','closed') and commission_tracking_ids"/>
                             <field name="disbursement_frequency" readonly="state in ('approved','closed') and commission_tracking_ids" help="If you select weekly, then bill will be generated on Monday, if you select biweekly, then bill will be generated on 1st and 15th of month, if you select monthly, then bill will be generated on 1st of month"/>
-                            <field name="salesperson_ids" widget="many2many_tags" 
+                            <field name="admin_person_id" invisible="commission_plan_type == 'sales_team'" required="commission_plan_type == 'admin'" readonly="state in ('approved','closed') and commission_tracking_ids" help="Admin person will receive commission for ALL sales orders during the plan period"/>
+                            <field name="salesperson_ids" widget="many2many_tags" invisible="commission_plan_type == 'admin'" required="commission_plan_type == 'sales_team'"
                                    readonly="state in ('approved','closed') and commission_tracking_ids"/>
                             <field name="company_id" groups="base.group_multi_company" readonly="state in ('approved','closed') and commission_tracking_ids"/>
                         </group>
                         <group string="Commission Rates">
-                            <field name="first_order_commission" readonly="state in ('approved','closed') and commission_tracking_ids"/>
-                            <field name="residual_commission" readonly="state in ('approved','closed') and commission_tracking_ids"/>
+                            <field name="first_order_commission" readonly="state in ('approved','closed') and commission_tracking_ids" invisible="commission_plan_type == 'admin'" help="Percentage for first-time customer orders"/>
+                            <field name="residual_commission" readonly="state in ('approved','closed') and commission_tracking_ids" invisible="commission_plan_type == 'admin'" help="Percentage for repeat customer orders"/>
+                            <field name="first_order_commission" string="Commission Rate (%)" readonly="state in ('approved','closed') and commission_tracking_ids" invisible="commission_plan_type == 'sales_team'" help="Commission percentage applied to all sales orders for admin"/>
                             <field name="company_id" groups="base.group_multi_company" readonly="1" invisible="1"/>
                             <!-- extra company field kept invisible to preserve prior layout compatibility -->
                         </group>
@@ -91,13 +94,15 @@
         <field name="model">commission.plan</field>
         <field name="arch" type="xml">
             <list string="Commission Plans">
+                <field name="commission_plan_type" widget="badge" decoration-info="commission_plan_type == 'sales_team'" decoration-warning="commission_plan_type == 'admin'"/>
                 <field name="name"/>
                 <field name="target_period_start" widget="string"/>
                 <field name="target_period_end" widget="string"/>
                 <field name="disbursement_frequency" widget="selection"/>
-                <field name="salesperson_ids"/>
-                <field name="first_order_commission" widget="number"/>
-                <field name="residual_commission" widget="number"/>
+                <field name="salesperson_ids" optional="show"/>
+                <field name="admin_person_id" optional="show"/>
+                <field name="first_order_commission" widget="number" optional="hide"/>
+                <field name="residual_commission" widget="number" optional="hide"/>
                 <field name="state" widget="badge" 
                 decoration-success="state == 'approved'" 
                 decoration-warning="state == 'closed'"

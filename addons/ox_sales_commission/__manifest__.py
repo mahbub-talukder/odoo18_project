@@ -6,15 +6,16 @@
     'description': """
         Commission Sales Management System
         ===================================
-        - 20% commission on first orders
-        - 10% residual commission on repeat orders
-        - Biweekly automated payouts
+        - Support for two commission plan types: Sales Team and Admin
+        - Sales Team Plans: 20% commission on first orders, 10% residual commission on repeat orders
+        - Admin Plans: Flat rate commission on ALL sales orders for designated admin person
+        - Flexible disbursement frequencies: Weekly, Biweekly, Monthly
         - Commission plan management with approval workflow
         - Real-time commission tracking
-        - Automated vendor bill generation
+        - Automated vendor bill generation based on invoice payment status
     """,
-    'author': 'Mahbub Talukder',
-    'website': 'https://www.nexelbd.com',
+    'author': 'Your Company',
+    'website': 'https://www.yourcompany.com',
     'depends': ['sale_management', 'account', 'mail'],
     'data': [
         'security/commission_security.xml',

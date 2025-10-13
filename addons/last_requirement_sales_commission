@@ -1,0 +1,16 @@
+
+Change Request:
+    Add a new field comission_plan_type to the commission plan model.
+    When comission plan type is 'Admin':
+    -> Hide Sales Person , show new field Admin Person.
+    -> commission_type should be 'Admin' when comission will be generated in comission tracking table. 
+    -> Whoever is sales person (for sales orders), comission should be generated for every sales order.
+    -> As per disbursment frequency, vendor bill should be generate for the mentioned admin person (admin_person_id).
+
+When comission plan type is 'Sales Team':
+ The current business logic should be applicable as usaul. (no change)
+
+
+ Note: I added some partial code for the CR from my end, you can modify as per you.
+
+ Now do read the full ox_sales_comission module try to understand and do implement the CR.

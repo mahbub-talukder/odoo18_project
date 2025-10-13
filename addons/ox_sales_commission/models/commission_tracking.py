@@ -10,7 +10,7 @@ class CommissionTracking(models.Model):
     _rec_name = 'sale_order_id'
     
     sale_order_id = fields.Many2one('sale.order', string='Sales Order', required=True)
-    salesperson_id = fields.Many2one('res.users', string='Salesperson', required=True)
+    salesperson_id = fields.Many2one('res.users', string='Commission User', required=True)
     commission_plan_id = fields.Many2one('commission.plan', string='Commission Plan', required=True)
     disbursement_frequency = fields.Selection(related='commission_plan_id.disbursement_frequency', 
                                               string='Disbursement Frequency', store=True)
@@ -20,7 +20,8 @@ class CommissionTracking(models.Model):
     order_amount = fields.Monetary(string='Order Amount', currency_field='currency_id')
     commission_type = fields.Selection([
         ('first_order', 'First Order'),
-        ('residual', 'Residual')
+        ('residual', 'Residual'),
+        ('admin', 'Admin')
     ], string='Commission Type', required=True)
     
     commission_percentage = fields.Float(string='Commission %',aggregator=False)
@@ -162,18 +163,18 @@ class CommissionTracking(models.Model):
         """Cron job to generate vendor bills based on disbursement frequency"""
         today = fields.Date.today()
 
-        # find the active commission plans
+        # find the active commission plans for testing date override
         active_commission_plan = self.env['commission.plan'].search([
             ('state', '=', 'approved'),
             ('target_period_start', '<=', today),
             ('target_period_end', '>=', today)
         ], limit=1)
         
-        if active_commission_plan.cron_run_date :
+        if active_commission_plan and active_commission_plan.cron_run_date:
             today = active_commission_plan.cron_run_date
 
         _logger.info(f"Today: {today},weekday: {today.weekday()},day: {today.day}")
-        # return True
+        
         # Get all unpaid commissions with paid invoices
         unpaid_commissions = self.search([
             ('is_paid', '=', False),
@@ -181,19 +182,26 @@ class CommissionTracking(models.Model):
             ('vendor_bill_id', '=', False)
         ])
         
-        # Group by salesperson and disbursement frequency
+        # Group by salesperson, commission plan, and disbursement frequency
+        # This handles both admin and sales team commissions
         commission_groups = {}
         for commission in unpaid_commissions:
-            key = (commission.salesperson_id.id, 
-                commission.commission_plan_id.disbursement_frequency)
+            # Key groups by plan type (admin vs sales_team)
+            # For sales_team: first_order and residual go in same bill
+            # For admin: all admin commissions go in same bill
+            key = (
+                commission.salesperson_id.id,
+                commission.commission_plan_id.disbursement_frequency,
+                commission.commission_plan_id.commission_plan_type
+            )
             if key not in commission_groups:
                 commission_groups[key] = []
             commission_groups[key].append(commission)
         
         # Create vendor bills
-        for (salesperson_id, frequency), commissions in commission_groups.items():
+        for (salesperson_id, frequency, plan_type), commissions in commission_groups.items():
             if self._should_generate_bill(frequency, today):
-                self._create_vendor_bill(salesperson_id, commissions)
+                self._create_vendor_bill(salesperson_id, commissions, plan_type)
                 
     def _should_generate_bill(self, frequency, date):
         """Check if bill should be generated based on frequency"""
@@ -206,22 +214,42 @@ class CommissionTracking(models.Model):
             return date.day == 1
         return False
         
-    def _create_vendor_bill(self, salesperson_id, commissions):
-        """Create vendor bill for commission payment"""
+    def _create_vendor_bill(self, salesperson_id, commissions, plan_type='sales_team'):
+        """Create vendor bill for commission payment
+        
+        Args:
+            salesperson_id: ID of the user receiving commission
+            commissions: recordset of commission.tracking records
+            plan_type: commission plan type ('admin' or 'sales_team')
+        """
         salesperson = self.env['res.users'].browse(salesperson_id)
+        
+        # Determine reference based on plan type
+        if plan_type == 'admin':
+            ref = f"Admin Commission Payment - {salesperson.name}"
+        else:
+            ref = f"Sales Commission Payment - {salesperson.name}"
         
         # Create vendor bill
         bill_vals = {
             'move_type': 'in_invoice',
             'partner_id': salesperson.partner_id.id,
             'invoice_date': fields.Date.today(),
-            'ref': f"Commission Payment - {salesperson.name}",
+            'ref': ref,
             'invoice_line_ids': []
         }
         
         for commission in commissions:
+            # Create descriptive line name based on commission type
+            if commission.commission_type == 'admin':
+                line_name = f"Admin Commission for SO {commission.sale_order_id.name}"
+            elif commission.commission_type == 'first_order':
+                line_name = f"First Order Commission for SO {commission.sale_order_id.name}"
+            else:
+                line_name = f"Residual Commission for SO {commission.sale_order_id.name}"
+            
             line_vals = (0, 0, {
-                'name': f"Commission for SO {commission.sale_order_id.name}",
+                'name': line_name,
                 'quantity': 1,
                 'price_unit': commission.commission_amount,
                 'account_id': self._get_commission_expense_account().id,

@@ -24,8 +24,8 @@
         <field name="name">My Commissions</field>
         <field name="res_model">commission.tracking</field>
         <field name="view_mode">list,form,pivot,graph</field>
-        <field name="domain">[('salesperson_id', '=', uid)]</field>
-        <field name="context">{'search_default_invoice_paid': 1, 'search_default_group_type': 1}</field>
+        <field name="domain">[('salesperson_id', '=', uid),('invoice_payment_state','=','paid')]</field>
+        <field name="context">{'search_default_group_type': 1}</field>
     </record>
     
     <menuitem id="menu_my_commission" 
@@ -40,7 +40,8 @@
         <field name="name">All Commissions</field>
         <field name="res_model">commission.tracking</field>
         <field name="view_mode">list,form,pivot,graph</field>
-        <field name="context">{'search_default_invoice_paid': 1, 'search_default_group_salesperson': 1}</field>
+        <field name="domain">[('invoice_payment_state','=','paid')]</field>
+        <field name="context">{'search_default_group_salesperson': 1}</field>
     </record>
     
     <menuitem id="menu_all_commission" 
