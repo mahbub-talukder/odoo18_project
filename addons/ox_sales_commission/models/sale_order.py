@@ -32,7 +32,7 @@ class SaleOrder(models.Model):
                     'sale_order_id': order.id,
                     'salesperson_id': admin_plan.admin_person_id.id,
                     'commission_plan_id': admin_plan.id,
-                    'order_amount': order.amount_total,
+                    'order_amount': order.amount_untaxed,
                     'commission_type': 'admin',
                     # For admin, use first_order_commission as the standard rate
                     'commission_percentage': admin_plan.first_order_commission,
@@ -66,7 +66,7 @@ class SaleOrder(models.Model):
                 'sale_order_id': order.id,
                 'salesperson_id': order.user_id.id,
                 'commission_plan_id': sales_team_plan.id,
-                'order_amount': order.amount_total,
+                'order_amount': order.amount_untaxed,
                 'commission_type': commission_type,
                 'commission_percentage': sales_team_plan.first_order_commission if is_first else sales_team_plan.residual_commission,
             }

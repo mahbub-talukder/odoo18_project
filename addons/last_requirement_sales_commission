@@ -1,5 +1,5 @@
-
-Change Request:
+Task 2: 
+Change Request :
     Add a new field comission_plan_type to the commission plan model.
     When comission plan type is 'Admin':
     -> Hide Sales Person , show new field Admin Person.
