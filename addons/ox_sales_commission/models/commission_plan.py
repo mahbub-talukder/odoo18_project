@@ -92,7 +92,7 @@ class CommissionPlan(models.Model):
         """Open commissions linked to this plan in a dedicated view."""
         self.ensure_one()
         action = self.env.ref('ox_sales_commission.action_all_commission').read()[0]
-        action['domain'] = [('commission_plan_id', '=', self.id)]
+        action['domain'] = [('commission_plan_id', '=', self.id),('invoice_payment_state','=','paid')]
         # Keep a helpful default grouping
         ctx = dict(self.env.context or {})
         ctx.update({'search_default_group_salesperson': 1})
